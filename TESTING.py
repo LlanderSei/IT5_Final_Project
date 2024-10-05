@@ -3,6 +3,8 @@ from DatabaseFunctions import DatabaseInteraction
 SIGNUPINFOS = {'Username': None, 'Password': None, 'Given Name': None, 'Middle Initial': None, 'Last Name': None, 'Age': None, 'Address': None}
 LOGININFO = {'Username': '', 'Password': ''}
 
+# TESTESTESTETSETSTESTESTESETSTESTETSETSTETSTSETSTETSTTESTESTESESESTTSETSETS!!!!!
+
 db = DatabaseInteraction()
 while True:
   Mode = input('[s] Signup | [l] Login: ')
