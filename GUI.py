@@ -63,13 +63,13 @@ class Login_Interface:#Login Interface meaing it has no functions yet please add
     def __get_username(self):
         self.__username = tk.CTkLabel(self.__get_left_frame(), text="Username:", font=("Poppins", 20), text_color= "white", fg_color="#696969")
         self.__username.place(relx= 0.5,x = -110, y = 130, anchor= "n")
-        self.__username_entry = tk.CTkEntry(self.__get_left_frame(), width= 350, font=("Poppins", 30), corner_radius= 35, fg_color= "#2c2c2c", border_color= "#2c2c2c", border_width= 5, text_color="White")
+        self.__username_entry = tk.CTkEntry(self.__get_left_frame(), width= 350, font=("Poppins", 20), corner_radius= 35, fg_color= "#2c2c2c", border_color= "#2c2c2c", border_width= 5, text_color="White", height=50)
         self.__username_entry.place(relx= 0.5, y = 160, anchor= "n")
     
     def __get_password(self):
         self.__password = tk.CTkLabel(self.__get_left_frame(), text="Password:", font=("Poppins", 20), text_color= "white", fg_color="#696969")
         self.__password.place(relx= 0.5,x = -110, y = 240, anchor= "n")
-        self.__password_entry = tk.CTkEntry(self.__get_left_frame(), width= 350, font=("Poppins", 30), corner_radius= 35, fg_color= "#2c2c2c", border_color= "#2c2c2c", border_width= 5, text_color="White", show="*")
+        self.__password_entry = tk.CTkEntry(self.__get_left_frame(), width= 350, font=("Poppins", 20), corner_radius= 35, fg_color= "#2c2c2c", border_color= "#2c2c2c", border_width= 5, text_color="White", show="*", height=50)
         self.__password_entry.place(relx= 0.5, y = 270, anchor= "n") 
 
     def __get_login(self):
