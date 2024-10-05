@@ -1,37 +1,49 @@
-import customtkinter as ctk  
+import customtkinter as ctk 
+from LoginSystem import LoginSystem
 from PIL import Image
 
-class Registration_Interface:
-    def __init__(self,):
-        self.root = ctk.CTk()
-        self.root.after(50, lambda: self.root.state("zoomed"))  
+class Registration_Interface(LoginSystem):
+    def __init__(self):
+        self.__root = ctk.CTk()
+        self.Main_Window()
         
+    def Main_Window(self):
+        self.__root.title("Expense Tracker")
+        self.__root.after(50, lambda: self.__get_fullscreen())
+        self.__root.configure(fg_color = "black")
+        self.__root.minsize(1400,650)
+        self._center_frame()
+        self.__root.mainloop()
+    
+    def __get_fullscreen(self):
+        return self.__root.state("zoomed")
+    
+    def _center_frame(self):
         self.__set_registration_frame()
-        self.__set_left_frame()
-        self.__set_right_frame()
+        self._set_left_frame()
+        self._set_right_frame()
 
         self.__is_student = ctk.StringVar(value="No")
         self.__has_kids = ctk.StringVar(value="Without")
 
         self.create_registration_form()
         self.__rightframe_contents()  
-        self.root.mainloop()
 
     def __set_registration_frame(self):
-        self.__registrationframe = ctk.CTkFrame(self.root, width=1000, height=650, fg_color="#696969", corner_radius=0)
+        self.__registrationframe = ctk.CTkFrame(self.__root, width=1000, height=650, fg_color="#696969", corner_radius=0)
         self.__registrationframe.place(relx=0.5, rely=0.5, anchor="center")
 
     def __get_registration_frame(self):
         return self.__registrationframe
 
-    def __set_left_frame(self):
+    def _set_left_frame(self):
         self.__leftFrame = ctk.CTkFrame(self.__get_registration_frame(), width=500, height=650, fg_color="#696969", corner_radius=0)
         self.__leftFrame.grid(row=0, column=0)
 
     def __get_left_frame(self):
         return self.__leftFrame
 
-    def __set_right_frame(self):
+    def _set_right_frame(self):
         self.__rightFrame = ctk.CTkFrame(self.__get_registration_frame(), width=500, height=650, fg_color="white", corner_radius=0)
         self.__rightFrame.grid(row=0, column=1)
 
@@ -125,11 +137,11 @@ class Registration_Interface:
         self.__signup.place(x=115, y=540)
 
     def __rightframe_contents(self):
-        self.photo = ctk.CTkImage(light_image=self.get_image(),
+        self.__photo = ctk.CTkImage(light_image=self.get_image(),
                                    dark_image=self.get_image(),
                                    size=(200, 200))
-        self.photoplacement = ctk.CTkLabel(self.__get_right_frame(), image=self.photo, text="", fg_color="white")
-        self.photoplacement.place(relx=0.5, rely=0.5, anchor="center")
+        self.__photoplacement = ctk.CTkLabel(self.__get_right_frame(), image=self.__photo, text="", fg_color="white")
+        self.__photoplacement.place(relx=0.5, rely=0.5, anchor="center")
 
     def get_image(self):
         return Image.open("default.png").convert("RGBA")

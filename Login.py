@@ -1,8 +1,8 @@
 import customtkinter as tk #This is a module that allows the developer to create GUI of tkinter but customizable
 from PIL import Image #Allows the use of images as well as transparent background
-#Hours wasted finding bugs: 3hrs (Just add your reaction) my reaction : 'o'
+from LoginSystem import LoginSystem
 
-class Login_Interface:#Login Interface meaing it has no functions yet please add functions 2nd developer
+class Login_Interface(LoginSystem):#Login Interface meaing it has no functions yet please add functions 2nd developer
 
     def __init__(self):#The constructor by using tk.CTk() i can call root to all of the methods
         self.__root = tk.CTk()
@@ -12,16 +12,16 @@ class Login_Interface:#Login Interface meaing it has no functions yet please add
         self.__root.after(50, lambda: self.__get_fullsceen())
         self.__root.configure(fg_color = "black")
         self.__root.minsize(1400,650)
-        self.__center_frame()
+        self._center_frame()
         self.__root.mainloop()
 
     def __get_fullsceen(self):
         return self.__root.state("zoomed")
     
-    def __center_frame(self):#It is the method that holds all of the frames
+    def _center_frame(self):#It is the method that holds all of the frames
         self.__set_login_frame()
-        self.__set_left_frame()
-        self.__set_right_frame()
+        self._set_left_frame()
+        self._set_right_frame()
         self.__left_frame_contents()
         self.__rightframe_contents()
 
@@ -35,14 +35,14 @@ class Login_Interface:#Login Interface meaing it has no functions yet please add
     def __get_login_frame(self):
         return self.__loginframe
     
-    def __set_left_frame(self):
+    def _set_left_frame(self):
         self.__leftFrame = tk.CTkFrame(self.__get_login_frame(), width=700, height=650, fg_color= "#696969", corner_radius=0)
         self.__leftFrame.grid(row=0, column=0)
     
     def __get_left_frame(self):
         return self.__leftFrame
     
-    def __set_right_frame(self):
+    def _set_right_frame(self):
         self.__rightFrame = tk.CTkFrame(self.__get_login_frame(), width=700, height=650, fg_color = "White" , corner_radius=0)
         self.__rightFrame.grid(row=0, column=1)
     
