@@ -50,13 +50,14 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
         return self.__rightFrame
     
     def __left_frame_contents(self):
-        self.__photo = tk.CTkImage(light_image=self.__get_image(),
-                     dark_image=self.__get_image(),
+        self.__photo = tk.CTkImage(light_image=self.__get_image_logo(),
+                     dark_image=self.__get_image_logo(),
                      size=(100, 100))
         self.__photoplacement = tk.CTkLabel(self.__get_left_frame(), image=self.__photo, text="", fg_color="#696969")
         self.__photoplacement.place(relx = 0.5, y = 10, anchor="n")  
         self.__get_username()
         self.__get_password()
+        self.__get_hide_password()
         self.__get_login()
         self.__get_signup()
     
@@ -70,8 +71,21 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
         self.__password = tk.CTkLabel(self.__get_left_frame(), text="Password:", font=("Poppins", 20), text_color= "white", fg_color="#696969")
         self.__password.place(relx= 0.5,x = -110, y = 240, anchor= "n")
         self.__password_entry = tk.CTkEntry(self.__get_left_frame(), width= 350, font=("Poppins", 20), corner_radius= 35, fg_color= "#2c2c2c", border_color= "#2c2c2c", border_width= 5, text_color="White", show="*", height=50)
-        self.__password_entry.place(relx= 0.5, y = 270, anchor= "n") 
+        self.__password_entry.place(relx= 0.5, y = 270, anchor= "n")
 
+    def __get_show_password(self):
+        self.__photo = tk.CTkImage(light_image=self.__get_image_show_password(),
+                     dark_image=self.__get_image_show_password(),
+                     size=(40, 25))
+        self.__show_password = tk.CTkButton(self.__get_left_frame(), image=self.__photo, text="", fg_color="#2c2c2c", width= 10, border_width= 2, border_color= "#2c2c2c", corner_radius=10)
+        self.__show_password.place(relx= 0.5, y = 275, anchor= "n", x = 220)
+
+    def __get_hide_password(self):
+        self.__photo = tk.CTkImage(light_image=self.__get_image_hide_password(),
+                     dark_image=self.__get_image_hide_password(),
+                     size=(50, 35))
+        self.__show_password = tk.CTkButton(self.__get_left_frame(), image=self.__photo, text="", fg_color="#2c2c2c", width= 10, border_width= 2, border_color= "#2c2c2c", corner_radius=10)
+        self.__show_password.place(relx= 0.5, y = 275, anchor= "n", x = 220)
     def __get_login(self):
         self.__login = tk.CTkButton(self.__get_left_frame(), text="Log-in", width= 200, height= 50, font=("Poppins", 20), fg_color= "#2c2c2c", text_color= "#e1e1e1", corner_radius= 50)
         self.__login.place(relx= 0.5, y = 380, anchor= "n")
@@ -81,14 +95,20 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
         self.__sign_up.place(relx= 0.5, y = 480, anchor= "n")
         
     def __rightframe_contents(self):
-        self.__photo = tk.CTkImage(light_image= self.__get_image(),
-                     dark_image= self.__get_image(),
+        self.__photo = tk.CTkImage(light_image= self.__get_image_logo(),
+                     dark_image= self.__get_image_logo(),
                      size=(200, 200))
         self.__photoplacement = tk.CTkLabel(self.__get_right_frame(), image=self.__photo, text="", fg_color="white")
         self.__photoplacement.place(relx= 0.5, rely= 0.5, anchor="center")
 
-    def __get_image(self):
+    def __get_image_logo(self):
         return Image.open("default.png").convert("RGBA")
+    
+    def __get_image_show_password(self):
+        return Image.open("updateeye.png").convert("RGBA")
+    
+    def __get_image_hide_password(self):
+        return Image.open("eye.png").convert("RGBA")
     
 window = Login_Interface()
 window.Main_Window()
