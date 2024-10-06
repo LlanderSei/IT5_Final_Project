@@ -3,6 +3,8 @@ import hashlib
 
 class CreateDatabase:
   def __init__(self):
+    self.__MYSQLConnection = mysql.connector
+
     print('Connecting to a Database...')
     try:
       self.__MYSQLConnection = mysql.connector.connect(host = 'localhost', user = 'root', password = '')
