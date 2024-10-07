@@ -27,22 +27,34 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
     def __get_root(self):#By encapsulating the root it prevents others from calling the root directly and changing it
         return self.__root
     
+    def __get_frame_width(self, percentage):
+        return int(self.__root.winfo_screenwidth() * percentage)
+
+    def __get_loginframe_width(self):
+        return self.__get_frame_width(0.8)
+
+    def __get_leftframe_width(self):
+        return self.__get_frame_width(0.45)
+
+    def __get_rightframe_width(self):
+        return self.__get_frame_width(0.45)
+    
     def __set_login_frame(self):#It is the frame that holds all of the frame it is located at the middle of the window
-        self.__loginframe = tk.CTkFrame(self.__get_root(), width=1400, height=650, fg_color = "#696969", corner_radius=0)
+        self.__loginframe = tk.CTkFrame(self.__get_root(), width=self.__get_loginframe_width(), height=650, fg_color = "#696969", corner_radius=0)
         self.__loginframe.place(relx= 0.5, rely= 0.5, anchor="center")
     
     def __get_login_frame(self):
         return self.__loginframe
     
     def _set_left_frame(self):
-        self.__leftFrame = tk.CTkFrame(self.__get_login_frame(), width=700, height=650, fg_color= "#696969", corner_radius=0)
+        self.__leftFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_leftframe_width(), height=650, fg_color= "#696969", corner_radius=0)
         self.__leftFrame.grid(row=0, column=0)
     
     def __get_left_frame(self):
         return self.__leftFrame
     
     def _set_right_frame(self):
-        self.__rightFrame = tk.CTkFrame(self.__get_login_frame(), width=700, height=650, fg_color = "White" , corner_radius=0)
+        self.__rightFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_rightframe_width(), height=650, fg_color = "White" , corner_radius=0)
         self.__rightFrame.grid(row=0, column=1)
     
     def __get_right_frame(self):
