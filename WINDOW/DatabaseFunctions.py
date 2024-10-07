@@ -2,17 +2,34 @@ import mysql.connector
 import hashlib
 
 class CreateDatabase:
+  __AttempDBLogin = 3
+
   def __init__(self):
-    self.__MYSQLConnection = mysql.connector
+    self.__MYSQLConnection = any
+    self.__MYSQLCursor = any
+    self.__AttempDBLogin
 
-    print('Connecting to a Database...')
-    try:
-      self.__MYSQLConnection = mysql.connector.connect(host = 'localhost', user = 'root', password = '')
-      print(f'Connection to a Database has been established: {self.__MYSQLConnection}')
+  def LOGINDATABASE(self):
+    while self.__AttempDBLogin > 0:
+      print(f'Attempts left: {self.__AttempDBLogin}')
+      try:
+        print('Login to your database: ')
+        HOST = input('Host: ').strip()
+        USER = input('User: ').strip()
+        PASSWORD = input('Password: ').strip()
 
-      self.__MYSQLCursor = self.__MYSQLConnection.cursor()
-    except Exception as ERR:
-      print(f'Error: {ERR}')
+        self.__MYSQLConnection = mysql.connector.connect(host = f'{HOST}', user = f'{USER}', password =f'{PASSWORD}')
+        self.__MYSQLCursor = self.__MYSQLConnection.cursor()
+        print(f'Connection to a Database has been established: {self.__MYSQLConnection}')
+        return 1
+      except mysql.connector.Error as ERR:
+        self.__AttempDBLogin -= 1
+        if self.__AttempDBLogin == 0:
+          print(f'Attempts has been exhausted, please rerun the program. Error: {ERR}')
+        else:
+          print(f'Error: {ERR}')
+          print('Try again.')
+    return 0
 
   def CURSOR(self):
     return self.__MYSQLCursor
@@ -73,13 +90,17 @@ class DatabaseInteraction:
   __USER_ID = int
   __TEMP_USER_CRED = any
 
-  def __init__(self): 
+  def __init__(self):
     self.__DB = CreateDatabase()
-    self.__DB.buildDatabase()
+
+    if self.__DB.LOGINDATABASE():
+      self.__DB.buildDatabase()
+    else: quit()
+
     self.__USER_ID, self.__TEMP_USER_CRED
     
     self.__USER_ID
-  
+
   def RegisterUser(self, OBJECTS):
     USERNAME, PASSWORD, GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS = OBJECTS
     try:
