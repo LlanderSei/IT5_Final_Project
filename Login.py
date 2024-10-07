@@ -1,7 +1,6 @@
 import customtkinter as tk #This is a module that allows the developer to create GUI of tkinter but customizable
 from PIL import Image #Allows the use of images as well as transparent background
 from LoginSystem import LoginSystem
-
 class Login_Interface(LoginSystem):#Login Interface meaing it has no functions yet please add functions 2nd developer
 
     def __init__(self):#The constructor by using tk.CTk() i can call root to all of the methods
@@ -83,7 +82,7 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
     def __get_hide_password(self):
         self.__photo = tk.CTkImage(light_image=self.__get_image_hide_password(),
                      dark_image=self.__get_image_hide_password(),
-                     size=(50, 35))
+                     size=(40, 25))
         self.__show_password = tk.CTkButton(self.__get_left_frame(), image=self.__photo, text="", fg_color="#2c2c2c", width= 10, border_width= 2, border_color= "#2c2c2c", corner_radius=10)
         self.__show_password.place(relx= 0.5, y = 275, anchor= "n", x = 220)
     def __get_login(self):
@@ -91,7 +90,7 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
         self.__login.place(relx= 0.5, y = 380, anchor= "n")
 
     def __get_signup(self):
-        self.__sign_up = tk.CTkButton(self.__get_left_frame(), text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color= "#2c2c2c", text_color="#e1e1e1", corner_radius= 50)
+        self.__sign_up = tk.CTkButton(self.__get_left_frame(), text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color= "#2c2c2c", text_color="#e1e1e1", corner_radius= 50, command=self.__open_registration_window)
         self.__sign_up.place(relx= 0.5, y = 480, anchor= "n")
         
     def __rightframe_contents(self):
@@ -109,6 +108,11 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
     
     def __get_image_hide_password(self):
         return Image.open("eye.png").convert("RGBA")
+    
+    def __open_registration_window(self):
+        from Registration import Registration_Interface
+        self.__root.withdraw()
+        register_window = Registration_Interface(self.__root)
     
 window = Login_Interface()
 window.Main_Window()
