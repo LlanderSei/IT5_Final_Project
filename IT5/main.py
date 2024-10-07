@@ -3,7 +3,7 @@ from Database.Database import Databases
 db = Databases('localhost', 'root', '', 'it5_arizobal')
 
 while True:
-    print("[1] Register\n[2] Login\n[3] Log-out\n[4] Blog\n[5] Fetch_Blog\n[x] Exit")
+    print("[1] Register\n[2] Login\n[3] Log-out\n[4] Blog\n[5] Read_Blog\n[6] Update_Blog\n[7] Delete_Blog\n[x] Exit")
     choice = input()
     if choice == "x":
         break
@@ -30,5 +30,13 @@ while True:
     
     elif choice == '5':
         blogs = db.fetch_blogs()
-        for blog in blogs:
-            print(blog[1])
+        
+    elif choice == '6':
+        blogs = db.fetch_blogs()
+        index = int(input("Enter what blog to update: "))
+        db.update_blog(blogs[index - 1][0], input("Enter post: "))
+
+    elif choice == '7':
+        blogs = db.fetch_blogs()
+        index = int(input("Enter what item to delete. "))
+        db.delete_blog(blogs[index - 1][0])
