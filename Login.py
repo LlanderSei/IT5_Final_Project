@@ -5,12 +5,24 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
 
     def __init__(self):#The constructor by using tk.CTk() i can call root to all of the methods
         self.__root = tk.CTk()
+   
+    def __get_min_main_window_width(self):
+        return self.__get_frame_width(0.8)
+    
+    def __get_min_main_window_height(self):
+        return self.__get_frame_height(0.8)
+    
+    def __get_frame_height(self, percentage):
+        return int(self.__root.winfo_screenheight() * percentage)
 
+    def __get_frame_width(self, percentage):
+        return int(self.__root.winfo_screenwidth() * percentage)
+    
     def Main_Window(self): #The main window it contains the log in interface along with functions which it still not have
-        self.__root.title("Expense Tracker")
+        self.__root.title("Expense Tracker/Login")
         self.__root.after(50, lambda: self.__get_fullsceen())
         self.__root.configure(fg_color = "black")
-        self.__root.minsize(1400,650)
+        self.__root.minsize(self.__get_min_main_window_width(),self.__get_min_main_window_height())
         self._center_frame()
         self.__root.mainloop()
 
@@ -29,7 +41,13 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
     
     def __get_frame_width(self, percentage):
         return int(self.__root.winfo_screenwidth() * percentage)
+    
+    def __get_frame_height(self, percentage):
+        return int(self.__root.winfo_screenheight() * percentage)
 
+    def __get_loginframewindow_height(self, percentage):
+        return int(self.__loginframe.winfo_screenheight() * percentage)
+    
     def __get_loginframe_width(self):
         return self.__get_frame_width(0.8)
 
@@ -39,22 +57,31 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
     def __get_rightframe_width(self):
         return self.__get_frame_width(0.45)
     
+    def __get_loginframe_height(self):
+        return self.__get_frame_height(1)
+
+    def __get_leftframe_height(self):
+        return self.__get_loginframewindow_height(0.8)
+
+    def __get_rightframe_height(self):
+        return self.__get_loginframewindow_height(0.8)
+    
     def __set_login_frame(self):#It is the frame that holds all of the frame it is located at the middle of the window
-        self.__loginframe = tk.CTkFrame(self.__get_root(), width=self.__get_loginframe_width(), height=650, fg_color = "#696969", corner_radius=0)
+        self.__loginframe = tk.CTkFrame(self.__get_root(), width=self.__get_loginframe_width(), height=self.__get_loginframe_height(), fg_color = "#696969", corner_radius=0)
         self.__loginframe.place(relx= 0.5, rely= 0.5, anchor="center")
     
     def __get_login_frame(self):
         return self.__loginframe
     
     def _set_left_frame(self):
-        self.__leftFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_leftframe_width(), height=650, fg_color= "#696969", corner_radius=0)
+        self.__leftFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_leftframe_width(), height=self.__get_leftframe_height(), fg_color= "#696969", corner_radius=0)
         self.__leftFrame.grid(row=0, column=0)
     
     def __get_left_frame(self):
         return self.__leftFrame
     
     def _set_right_frame(self):
-        self.__rightFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_rightframe_width(), height=650, fg_color = "White" , corner_radius=0)
+        self.__rightFrame = tk.CTkFrame(self.__get_login_frame(), width=self.__get_rightframe_width(), height=self.__get_rightframe_height(), fg_color = "White" , corner_radius=0)
         self.__rightFrame.grid(row=0, column=1)
     
     def __get_right_frame(self):
