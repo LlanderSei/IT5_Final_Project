@@ -4,9 +4,16 @@ from PIL import Image
 
 class Registration_Interface(LoginSystem):
     def __init__(self, parent):
-        self.__root = ctk.CTkToplevel(parent)
+        self.__parent = parent
+        self.__root = ctk.CTkToplevel(self.__parent)
+        self.__root.protocol("WM_DELETE_WINDOW", self.__on_close)
         self.Main_Window()
-        
+
+    def __on_close(self):
+        self.__parent.quit()
+        self.__parent.destroy()
+        self.__root.destroy()
+            
     def Main_Window(self):
         self.__root.title("Expense Tracker")
         self.__root.after(50, lambda: self.__get_fullscreen())

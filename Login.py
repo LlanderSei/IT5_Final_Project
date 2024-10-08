@@ -125,6 +125,11 @@ class Login_Interface(LoginSystem):#Login Interface meaing it has no functions y
         from Registration import Registration_Interface
         self.__root.withdraw()
         register_window = Registration_Interface(self.__root)
+        register_window.protocol("WM_DELETE_WINDOW", self.__terminate_app)
+    
+    def __terminate_app(self):
+        self.__root.quit()
+        self.__root.destroy()
     
 window = Login_Interface()
 window.Main_Window()
