@@ -76,10 +76,10 @@ class Home:
         return self.__get_mainframe_height(0.3)
     
     def __note_width(self):
-        return self.__get_mainframe_width(0.8)
+        return self.__get_mainframe_width(0.4)
 
     def __note_height(self):
-        return self.__get_mainframe_height(0.2)
+        return self.__get_mainframe_height(0.3)
     
     def __inputs_width(self):
         return self.__get_mainframe_width(0.3)
@@ -140,8 +140,8 @@ class Home:
         self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __navigation_footer_frame(self):
-        self.__navigation_footer = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="yellow")
-        self.__navigation_footer.place(relx = 0.5, rely = 0.85, y = -10,anchor="n")
+        self.__navigation_footer = ctk.CTkFrame(self.__get_main_frame(), width= self.__note_width(), height= self.__note_height(), fg_color="yellow")
+        self.__navigation_footer.place(relx = 0.7, rely = 0.60, y = -25,anchor="n")
         self.__Logout()
         self.__View_Profile()
         self.__add()
@@ -152,33 +152,24 @@ class Home:
         return self.__get_navigation_footer_frame_width(0.2)
     
     def __Logout(self):
-        self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Log Out",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
         self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Log-out",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
-        self.__logout_button.place(relx=0.1, rely=0.5, anchor="center")
+        self.__logout_button.place(relx = 0.3, rely = 0.25, anchor = "center")
 
     def __View_Profile(self):
-        self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="View Profile",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__view_button.place(relx=0.2, rely=0.5, anchor="center")
         self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="View Profile",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
-        self.__view_button.place(relx=0.3, rely=0.5, anchor="center")
+        self.__view_button.place(relx = 0.5, rely = 0.25, anchor = "w")
 
     def __add(self):
-        self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Add",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__add_button.place(relx=0.3, rely=0.5, anchor="center")
         self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Add",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
-        self.__add_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.__add_button.place(relx = 0.3, rely = 0.55, anchor = "s")
 
     def __update(self):
-        self.__update_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Update",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__update_button.place(relx=0.4, rely=0.5, anchor="center")
         self.__update_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Update",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
-        self.__update_button.place(relx=0.7, rely=0.5, anchor="center")
+        self.__update_button.place(relx = 0.64, rely = 0.55, anchor = "s")
 
     def __delete(self):
-        self.__delete_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Delete",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__delete_button.place(relx=0.5, rely=0.5, anchor="center")
         self.__delete_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Delete",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
-        self.__delete_button.place(relx=0.9, rely=0.5, anchor="center")
+        self.__delete_button.place(relx = 0.46, rely = 0.75, anchor = "s")
 
     def __income_frame(self):
         self.__income = ctk.CTkFrame(self.__get_main_frame(), width=self.__income_width(), height= self.__income_height(), fg_color="blue")
@@ -236,13 +227,13 @@ class Home:
         
     def __note_frame(self):
         self.__note = ctk.CTkFrame(self.__get_main_frame(), width=self.__note_width(), height= self.__note_height(), fg_color="red")
-        self.__note.place(relx = 0.5, rely = 0.7,anchor="center")
+        self.__note.place(relx = 0.5, rely = 0.75, anchor = "e")
         
-        self.__label_note = ctk.CTkLabel(self.__note, text = "Note/Reminder:", font = ("Poppins", 20), width = 1400, height = 40, fg_color = "black", text_color = "white")
+        self.__label_note = ctk.CTkLabel(self.__note, text = "Note/Reminder:", font = ("Poppins", 20), width = 700, height = 40, fg_color = "black", text_color = "white")
         self.__label_note.place( relx = 0.05, rely = 0.2, anchor = "w")
     
-        self.__entry_note = ctk.CTkEntry(self.__note, width = 1400, height = 30, font = ("Poppins", 20), fg_color = "gray")
-        self.__entry_note.place( relx = 0.05, rely = 0.4, anchor = "w")
+        self.__entry_note = ctk.CTkTextbox(self.__note, width = 700, height = 100, font = ("Poppins", 20), fg_color = "gray")
+        self.__entry_note.place( relx = 0.05, rely = 0.5, anchor = "w")
 
     def __inputs_frame(self):
         self.__input = ctk.CTkFrame(self.__get_main_frame(), width=self.__inputs_width(), height= self.__inputs_height(), fg_color="green")
@@ -250,8 +241,21 @@ class Home:
         
         noteDropdown_var = ctk.StringVar(value = "Needs")
         
-        dropdown = ctk.CTkOptionMenu(self.__input, variable = noteDropdown_var, values = ["Needs", "Wants"], width = 300, height = 50)
-        dropdown.place( relx = 0.2, rely = 0.1, anchor = "w")
+        dropdown = ctk.CTkComboBox(self.__input, variable = noteDropdown_var, values = ["Needs", "Wants"], font = ("Poppins", 16), width = 300, height = 50, state = "readonly")
+        dropdown.place( relx = 0.2, rely = 0.2, anchor = "w")
+        
+        self.__label_expenditures = ctk.CTkLabel(self.__input, text= "Expenditures:", font = ("Poppins", 16), width = 150, height = 30, fg_color = "black", text_color= "white")
+        self.__label_expenditures.place( relx = 0.1, rely = 0.5, anchor = "w") 
+        
+        self.__entry_expenditures = ctk.CTkEntry(self.__input,height = 30, font = ("Poppins", 20), fg_color = "gray")
+        self.__entry_expenditures.place( relx = 0.5, rely = 0.5, anchor = "w")
+        
+        self.__label_inputAmount = ctk.CTkLabel(self.__input, text= "Amount:", font = ("Poppins", 16), width = 150, height = 30, fg_color = "black", text_color= "white")
+        self.__label_inputAmount.place( relx = 0.1, rely = 0.7, anchor = "w") 
+        
+        self.__entry_inputAmmount = ctk.CTkEntry(self.__input,height = 30, font = ("Poppins", 20), fg_color = "gray")
+        self.__entry_inputAmmount.place( relx = 0.5, rely = 0.7, anchor = "w")
+               
         
     
 home = Home()
