@@ -1,184 +1,221 @@
+from MainWindowFunctions import MainWindowFunctions
 import customtkinter as CTK
 import os
-from PIL import Image, ImageTk
-from MainWindowFunctions import MainWindowFunctions
+from PIL import Image
 
 class MainWindow:
-  __Window_W = __Window_H = int
-  __Current_Frame = 'LOGIN'
-
-  "Instantiate objects for the window to run."
   def __init__(self):
-    self.__Current_Frame, self.__Window_W, self.__Window_H
-
-    self.MainWindow = CTK.CTk()
-    self.__LoginFrame = CTK.CTkFrame(self.MainWindow)
-    self.__RegisterFrame = CTK.CTkFrame(self.MainWindow)
-    self.__ConnectDBWindow = CTK.CTkToplevel()
-    self.__ConnectDBWindow.withdraw()
-
     self.MWF = MainWindowFunctions(self)
-    self.__SETUP_MainWindow()
-    self.__SETUP_ConnectToDBWindow()
-
-  def GET_MainWindowObject(self):
-    "Returns the MainWindow object. Useful to reach this out from other classes."
-    return self.MainWindow
-  
-  def GET_LoginFrameObject(self):
-    "Returns the LoginFrame object. Useful to reach this out from other classes."
-    return self.__LoginFrame
-
-  def GET_RegisterFrameObject(self):
-    "Returns the RegisterFrame object. Useful to reach this out from other classes."
-    return self.__RegisterFrame
-
-  def GET_ConnecToDBWindowObject(self):
-    return self.__ConnectDBWindow
-
-  def GET_ScreenWindowSize(self, PARAMETER):
-    "Gets the screen size."
-    match PARAMETER:
-      case 'W': return self.MainWindow.winfo_screenwidth()
-      case 'H': return self.MainWindow.winfo_screenheight()
-
-  def __SETUP_MainWindow(self):
-    "Instantiating objects for MainWindow to function."
-    self.MainWindow.title('Financial Tracker / Login')
-    self.MainWindow.config(background = self.__COLORS('GRAY2'))
-    self.MainWindow.geometry(self.CenterAndSize(self.__MW_MinWindowSize('W'), self.__MW_MinWindowSize('H')))
-    self.MainWindow.minsize(self.__MW_MinWindowSize('W'), self.__MW_MinWindowSize('H'))
-    self.MainWindow.iconbitmap(self.GET_RELEVANT_PATHDIR('assets/logo.ico'))
-    # self.MainWindow.bind("<Configure>", self.__EVT_Resizable_Frame)
-
-    self.__SETUP_LoginFrame()
-    self.__SETUP_RegisterFrame()
-    self.MainWindow.protocol("WM_DELETE_WINDOW", self.__ON_Closing)
-  
-  def CenterAndSize(self, WIDTH, HEIGHT):
-    "Gets the provided WIDTH and HEIGHT then automatically centers them."
-    X = (self.GET_ScreenWindowSize('W') // 2) - (WIDTH // 2)
-    Y = (self.GET_ScreenWindowSize('H') // 2) - (HEIGHT // 2)
-    return f'{WIDTH}x{HEIGHT}+{X}+{Y}'
-  
-  def __MW_MinWindowSize(self, PARAMETER):
-    "The minimum window size of the MainWindow."
-    match PARAMETER:
-      case 'W': return 850
-      case 'H': return 650
-
-  def __EVT_Resizable_Frame(self, *EVENT):
-    if hasattr(self, '__Current_Frame'):
-      self.__Window_W = self.MainWindow.winfo_width() * .9
-      self.__Window_H = self.MainWindow.winfo_height() * .9
-      self.__UPDATE_Frame_Size(self.__Current_Frame)
-
-  def __UPDATE_Frame_Size(self, TARGETFRAME = 'LOGIN'):
-    match TARGETFRAME:
-      case 'LOGIN': self.__LoginFrame.place_configure(width=self.__Window_W, height=self.__Window_H)
-      case 'REGISTER': self.__RegisterFrame.place_configure(width=self.__Window_W, height=self.__Window_H)
-
-  def Change_Current_Frame(self, TARGETFRAME):
-    self.__Current_Frame = TARGETFRAME
-    match TARGETFRAME:
-      case 'LOGIN': self.__LoginFrame.place(relx=.5, rely=.5, anchor = 'center')
-      case 'REGISTER': self.__RegisterFrame.place(relx=.5, rely=.5, anchor = 'center')
-    self.__EVT_Resizable_Frame()
-
-  def __SETUP_LoginFrame(self):
-    self.__LoginFrame.configure(width = self.__MW_MinWindowSize('W'), height = self.__MW_MinWindowSize('H'), fg_color = self.__COLORS('GRAY3'), bg_color = self.__COLORS('GRAY2'), border_width = 10, border_color = 'black', corner_radius = 10)
-    self.__SETUP_LoginFrame_Widgets()
-    self.__LoginFrame.place(relx=.5, rely=.5, anchor = 'center')
-    self.__LoginFrame.place_configure(relwidth=.975, relheight=.8)
-  
-  def __SETUP_LoginFrame_Widgets(self):
-    CTK.CTkLabel(self.__LoginFrame, text='', anchor='center', fg_color=self.__COLORS('DIRTYWHITE'), width=397, height=494).place(relx=.5, rely=.5, x=0, y=-247)
-    CTK.CTkLabel(self.__LoginFrame, text='', anchor='center', fg_color=self.__COLORS('DIRTYWHITE'), image=self.__CTKIMAGE('logo', (200, 200))).place(relx=.5, rely=.5, x=100, y=-100)
-
-    CTK.CTkLabel(self.__LoginFrame, text='LOGIN', font=('Poppins Bold',30), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-250, y=-220)
+    self.__MainWindow = CTK.CTk()
     
-    CTK.CTkLabel(self.__LoginFrame, text='Username:', font=('Poppins',20), anchor='e', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-180)
-    CTK.CTkEntry(self.__LoginFrame, font=('Poppins',20), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=350, border_width=5, corner_radius=35, height=30).place(relx=.5, rely=.5, x=-370, y=-150)
+    self.__INSTANTIATE_OBJECTS()
+    self.__SET_MainWindow()
+    
+  def __INSTANTIATE_OBJECTS(self):
+    self.__MainFrame = CTK.CTkFrame(self.__MainWindow)
+    self.__Login_LeftFrame = CTK.CTkFrame(self.__MainFrame)
+    self.__Register_LeftFrame = CTK.CTkFrame(self.__MainFrame)
 
-    CTK.CTkLabel(self.__LoginFrame, text='Password:', font=('Poppins',20), anchor='e', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-80)
-    CTK.CTkEntry(self.__LoginFrame, font=('Poppins',20), bg_color=self.__COLORS('GRAY3'), fg_color=self.__COLORS('GRAY5'), border_color=self.__COLORS('BLACK1'), width=350, border_width=5, corner_radius=35, height=30).place(relx=.5, rely=.5, x=-370, y=-50)
-    CTK.CTkButton(self.__LoginFrame, text='', bg_color=self.__COLORS('GRAY5'), fg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=30, border_width=2, corner_radius=20, height=30, image=self.__CTKIMAGE('show_eye', (30, 20))).place(relx=.5, rely=.5, x=-95, y=-40)
+    self.__LI_USERNAME = CTK.StringVar()
+    self.__LI_PASSWORD = CTK.StringVar()
 
-    CTK.CTkButton(self.__LoginFrame, text='Login', font=('Poppins',20), bg_color=self.__COLORS('GRAY3'), fg_color=self.__COLORS('GRAY4'), border_color=self.__COLORS('BLACK1'), width=330, border_width=5, corner_radius=35, height=30).place(relx=.5, rely=.5, x=-360, y=90)
-    CTK.CTkButton(self.__LoginFrame, text='Sign-up', font=('Poppins',20), bg_color=self.__COLORS('GRAY3'), fg_color=self.__COLORS('GRAY4'), border_color=self.__COLORS('BLACK1'), width=330, border_width=5, corner_radius=35, height=30, command=lambda: self.MWF.SHOW_RegisterFrame()).place(relx=.5, rely=.5, x=-360, y=150)
+    self.__FIRST_NAME = CTK.StringVar()
+    self.__LAST_NAME = CTK.StringVar()
+    self.__AGE = CTK.StringVar()
+    self.__ADDRESS = CTK.StringVar()
+    self.__REG_USERNAME = CTK.StringVar()
+    self.__REG_PASSWORD = CTK.StringVar()
 
-  def __SETUP_RegisterFrame(self):
-    self.__RegisterFrame.configure(width = self.__MW_MinWindowSize('W'), height = self.__MW_MinWindowSize('H'), fg_color = self.__COLORS('GRAY3'), bg_color = self.__COLORS('GRAY2'), border_width = 10, border_color = 'black', corner_radius = 10)
-    self.__SETUP_RegisterFrame_Widgets()
+    self.__Entry_Width = 375
+
+    self.__LI_Is_Password_Masked = True
+    self.__REG_Is_Password_Masked = True
+
+  def GET_RootWindowObject(self):
+    return self.__MainWindow
+
+  def __SET_MainWindow(self):
+    self.__MainWindow.title('Expense Tracker / Login')
+    self.__MainWindow.configure(fg_color='black')
+    self.__MainWindow.minsize(self.__GET_MinSizeMainWindow('W', .8), self.__GET_MinSizeMainWindow('H', .8))
+    self.__MainWindow.geometry(self.__CenterAndSize(self.__MainWindow._min_width, self.__MainWindow._min_height))
+
+    "INSTANTIATING CHILD WIDGETS"
+    self.__SET_MainFrame()
+    self.__SET_LeftFrame_Login()
+    self.__SET_LeftFrame_Register()
+    self.__SET_RightFrame()
+    self.__Login_LeftFrame.grid(row=0, column=0)
+    
+  def __GET_MinSizeMainWindow(self, PARAMETER, PERCENTAGE):
+    match PARAMETER:
+      case 'W': return self.__MainWindow.winfo_screenwidth() * PERCENTAGE
+      case 'H': return self.__MainWindow.winfo_screenheight() * PERCENTAGE
   
-  def __SETUP_RegisterFrame_Widgets(self):
-    CTK.CTkLabel(self.__RegisterFrame, text='', anchor='center', fg_color=self.__COLORS('DIRTYWHITE'), width=397, height=494).place(relx=.5, rely=.5, x=0, y=-247)
-    CTK.CTkLabel(self.__RegisterFrame, text='', anchor='center', fg_color=self.__COLORS('DIRTYWHITE'), image=self.__CTKIMAGE('logo', (200, 200))).place(relx=.5, rely=.5, x=100, y=-100)
-    CTK.CTkLabel(self.__RegisterFrame, text='REGISTER', font=('Poppins Bold',30), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-270, y=-240)
-    CTK.CTkLabel(self.__RegisterFrame, text='fields with asterisk (*) are required', font=('Poppins',15), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-340, y=-200)
+  def __GET_FrameSize(self, PARAMETER, PERCENTAGE):
+    match PARAMETER:
+      case 'W': return self.__MainWindow.winfo_screenwidth() * PERCENTAGE
+      case 'H': return self.__MainWindow.winfo_screenheight() * PERCENTAGE
 
-    CTK.CTkLabel(self.__RegisterFrame, text='*First Name:', font=('Poppins Bold',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-150)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=-150)
+  def __CenterAndSize(self, WIDTH, HEIGHT):
+    PosX = (self.__MainWindow.winfo_screenwidth() // 2) - (WIDTH // 2)
+    PosY = (self.__MainWindow.winfo_screenheight() // 2) - (HEIGHT // 2)
+    return f'{WIDTH}x{HEIGHT}+{PosX}+{PosY}'
 
-    CTK.CTkLabel(self.__RegisterFrame, text='Last Name:', font=('Poppins',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-110)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=-110)
+  def __GET_PosFrameSizes(self, PARAMETER, PERCENTAGE):
+    match PARAMETER:
+      case 'W': return self.__GET_FrameSize(PARAMETER, PERCENTAGE)
+      case 'H': return self.__MainFrame.winfo_screenheight() * PERCENTAGE
+    
+  def __SET_MainFrame(self):
+    self.__MainFrame.configure(width=self.__GET_FrameSize('W', .8), height=self.__GET_FrameSize('H', 1), fg_color=self.__Colors('DIMGRAY'), corner_radius = 0)
+    self.__MainFrame.place(relx=.5, rely=.5, anchor='center')
+  
+  def __SET_LeftFrame_Login(self):
+    "LEFT FRAME LOGIN"
+    self.__Login_LeftFrame = CTK.CTkFrame(self.__MainFrame, width=self.__GET_PosFrameSizes('W', .45), height=self.__GET_PosFrameSizes('H', .8), fg_color=self.__Colors('DIMGRAY'))
 
-    CTK.CTkLabel(self.__RegisterFrame, text='Age:', font=('Poppins',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-70)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=50, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=-70)
+    "/ LOGO"
+    CTK.CTkLabel(self.__Login_LeftFrame, image=self.CTKIMAGE('logo', (100, 100)), text='', fg_color=self.__Colors('DIMGRAY')).place(relx=.5, x=15, y=10, anchor='n')
+    "/ LABEL: LOGIN"
+    CTK.CTkLabel(self.__Login_LeftFrame, text="LOGIN", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold', 50)).place(relx= 0.525, y=120, anchor="n")
 
-    CTK.CTkLabel(self.__RegisterFrame, text='Address:', font=('Poppins',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=-30)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=-30)
+    "/ USERNAME"
+    CTK.CTkLabel(self.__Login_LeftFrame, text='Username:', font=('Poppins', 20), text_color='white').place(relx=.5, x=-115, y=190, anchor='n')
+    CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=50, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), border_color=self.__Colors('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_USERNAME).place(relx= .5, y=220, anchor='n')
 
-    CTK.CTkLabel(self.__RegisterFrame, text='*Username:', font=('Poppins Bold',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=10)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=10)
+    "/ PASSWORD"
+    CTK.CTkLabel(self.__Login_LeftFrame, text='Password:', font=('Poppins', 20), text_color='white').place(relx=.5, x=-115, y=300, anchor='n')
+    self.__LI_ENTRY_Password = CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=50, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), border_color=self.__Colors('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_PASSWORD, show='*')
+    self.__LI_ENTRY_Password.place(relx= .5, y=330, anchor='n')
+    self.__LI_BUTTON_Password = CTK.CTkButton(self.__Login_LeftFrame, image=self.CTKIMAGE('show_eye', (40, 25)), text='', fg_color=self.__Colors('VERYDARKGRAY'), width=10, border_width=2, border_color=self.__Colors('VERYDARKGRAY'), corner_radius=10, command=lambda: self.MWF.BUTTON_LI_Password())
+    self.__LI_BUTTON_Password.place(relx= 0.5, y = 340, anchor= "n", x = 220)
 
-    CTK.CTkLabel(self.__RegisterFrame, text='*Password:', font=('Poppins Bold',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=50)
-    CTK.CTkEntry(self.__RegisterFrame, font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=50)
-    CTK.CTkButton(self.__RegisterFrame, text='', bg_color=self.__COLORS('GRAY5'), fg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=10, border_width=2, corner_radius=20, height=5, image=self.__CTKIMAGE('show_eye', (15, 10))).place(relx=.5, rely=.5, x=-55, y=55)
+    "/ LOGIN BUTTON"
+    CTK.CTkButton(self.__Login_LeftFrame, text='Log-In', width=200, height=50, font=('Poppins', 20), fg_color=self.__Colors('VERYDARKGRAY'), text_color= "#e1e1e1", corner_radius= 50).place(relx= 0.5, y = 420, anchor= "n")
 
-    CTK.CTkLabel(self.__RegisterFrame, text='Student', font=('Poppins',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=90)
-    CTK.CTkCheckBox(self.__RegisterFrame, text='No', font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=90)
+    "/ SIGNUP BUTTON"
+    CTK.CTkButton(self.__Login_LeftFrame, text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color=self.__Colors('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius= 50, command=lambda: self.MWF.SWITCH_RegisterFrame()).place(relx= 0.5, y = 500, anchor= "n")
 
-    CTK.CTkLabel(self.__RegisterFrame, text='Has Kids', font=('Poppins',17), anchor='center', bg_color=self.__COLORS('GRAY3')).place(relx=.5, rely=.5, x=-370, y=130)
-    CTK.CTkCheckBox(self.__RegisterFrame, text='No', font=('Poppins Bold',13), bg_color=self.__COLORS('GRAY3'), border_color=self.__COLORS('BLACK1'), width=220, border_width=2, corner_radius=35, height=13).place(relx=.5, rely=.5, x=-240, y=130)
+  def __SET_LeftFrame_Register(self):
+    "LEFT FRAME REGISTER"
+    self.__Register_LeftFrame.configure(width=self.__GET_PosFrameSizes('W', .45), height=self.__GET_PosFrameSizes('H', .8), fg_color=self.__Colors('DIMGRAY'))
+    # self.__Register_LeftFrame.grid(row=0, column=0)
 
-    CTK.CTkButton(self.__RegisterFrame, text='Register', font=('Poppins',15), bg_color=self.__COLORS('GRAY3'), fg_color=self.__COLORS('GRAY4'), border_color=self.__COLORS('BLACK1'), width=130, border_width=5, corner_radius=35, height=20).place(relx=.5, rely=.5, x=-190, y=180)
-    CTK.CTkButton(self.__RegisterFrame, text='Back', font=('Poppins',15), bg_color=self.__COLORS('GRAY3'), fg_color=self.__COLORS('GRAY4'), border_color=self.__COLORS('BLACK1'), width=130, border_width=5, corner_radius=35, height=20, command=lambda: self.MWF.SHOW_LoginFrame()).place(relx=.5, rely=.5, x=-340, y=180)
+    "/ LABEL: REGISTER"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="REGISTER", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold', 50)).place(relx= 0.525, y=30, anchor="n")
+    CTK.CTkLabel(self.__Register_LeftFrame, text="fields with asterisk (*) are required", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins', 20)).place(relx= 0.525, y=90, anchor="n")
 
-  def __ON_Closing(self):
-    self.MainWindow.destroy()
+    "/ FIRST NAME"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="*First Name", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold', 20)).place(relx= 0.25, y=145, anchor="n")
+    CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color= self.__Colors('VERYDARKGRAY'), textvariable=self.__FIRST_NAME).place(relx = 0.65, y=135, anchor="n")
+    "/ LAST NAME"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="Last Name", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins', 20)).place(relx=0.25, y=210, anchor="n")
+    CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins', 20), width=self.__Entry_Width, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color= self.__Colors('VERYDARKGRAY'), textvariable=self.__LAST_NAME).place(relx = 0.65, y=200,anchor="n")
+    "/ AGE"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="Age", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins',20)).place(relx=0.25, y=275, anchor="n")
+    CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color=self.__Colors('VERYDARKGRAY'), textvariable=self.__AGE).place(relx = 0.65, y=265,anchor="n") 
+    "/ ADDRESS"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="Address", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins',20)).place(relx=0.25, y=340, anchor="n")
+    CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color=self.__Colors('VERYDARKGRAY'), textvariable=self.__ADDRESS).place(relx = 0.65, y=330,anchor="n")
+    "/ USERNAME"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="*Username", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold',20)).place(relx=0.25, y=405, anchor="n")
+    CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color=self.__Colors('VERYDARKGRAY'), textvariable=self.__REG_USERNAME).place(relx = 0.65, y=395,anchor="n")
 
-  def __SETUP_ConnectToDBWindow(self):
-    self.__ConnectDBWindow.title('Connect to a database.')
-    self.__ConnectDBWindow.geometry(self.CenterAndSize(500,250))
+    "/ PASSWORD"
+    CTK.CTkLabel(self.__Register_LeftFrame, text="*Password", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold',20)).place(relx=0.25, y=470, anchor="n")
+    self.__REG_ENTRY_Password = CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width * .8, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color=self.__Colors('VERYDARKGRAY'), show='*', textvariable=self.__REG_PASSWORD)
+    self.__REG_ENTRY_Password.place(relx = 0.6, y=460,anchor="n")
+    self.__REG_BUTTON_Password = CTK.CTkButton(self.__Register_LeftFrame, text='', image=self.CTKIMAGE('show_eye', (40, 20)), fg_color=self.__Colors('VERYDARKGRAY'), border_color=self.__Colors('VERYDARKGRAY'), border_width=2, corner_radius=10, width=10)
+    self.__REG_BUTTON_Password.place(relx= 0.61, y = 470, anchor= "n", x = 180)
 
-  def __COLORS(self, COLORNAME):
-    ":COLORNAME: available colors provided"
+    "/ REGISTER AND RETURN BUTTON"
+    CTK.CTkButton(self.__Register_LeftFrame, text="Register", width=500, height= 50, font=("Poppins", 20), fg_color= self.__Colors('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius= 35).place(relx= 0.55, y = 550, anchor= "n")
+    CTK.CTkButton(self.__Register_LeftFrame, text="Return to Log-In", width=500, height= 50, font=("Poppins", 20), fg_color= self.__Colors('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius=35, command=lambda: self.MWF.SWITCH_LoginFrame()).place(relx= 0.55, y = 615, anchor= "n")
+
+  def __SET_RightFrame(self):
+    self.__Static_RightFrame = CTK.CTkFrame(self.__MainFrame, width=self.__GET_PosFrameSizes('W', .45), height=self.__GET_PosFrameSizes('H', .8), fg_color='WHITE')
+    self.__Static_RightFrame.grid(row=0, column=1)
+    CTK.CTkLabel(self.__Static_RightFrame, image=self.CTKIMAGE('logo', (200, 200)), text='', fg_color='white').place(relx= 0.5, rely= 0.5, anchor="center")
+
+  def __Colors(self, COLORNAME):
     match COLORNAME:
-      case 'BLACK1': return '#242524'
-      case 'DIRTYWHITE': return '#DEDAC8'
-      case 'GRAY1': return '#838383'
-      case 'GRAY2': return '#BFBFBF'
-      case 'GRAY3': return '#797979'
-      case 'GRAY4': return '#474747'
-      case 'GRAY5': return '#313131'
+      case 'DIMGRAY': return '#696969'
+      case 'VERYDARKGRAY': return '#2c2c2c'
+      case 'VERYLIGHTGRAY': return '#e1e1e1'
 
-  def __IMAGE(self, IMAGENAME):
-    "Returns the image provided by the pathname."
+  def IMAGE(self, IMAGENAME):
     match IMAGENAME:
-      case 'show_eye': return Image.open(self.GET_RELEVANT_PATHDIR('assets/show_eye.png')).convert('RGBA')
       case 'logo': return Image.open(self.GET_RELEVANT_PATHDIR('assets/logo.png')).convert('RGBA')
-      case 'logoico': return Image.open(self.GET_RELEVANT_PATHDIR('assets/logo.ico'))
+      case 'hide_eye': return Image.open(self.GET_RELEVANT_PATHDIR('assets/hide_eye.png')).convert('RGBA')
+      case 'show_eye': return Image.open(self.GET_RELEVANT_PATHDIR('assets/show_eye.png')).convert('RGBA')
 
-  def __CTKIMAGE(self, IMAGENAME, SIZE = tuple):
-    return CTK.CTkImage(light_image=self.__IMAGE(IMAGENAME), dark_image=self.__IMAGE(IMAGENAME), size=SIZE)
-
-  def __IMAGETK(self, IMAGENAME):
-    return ImageTk.PhotoImage(self.__IMAGE(IMAGENAME))
-
+  def CTKIMAGE(self, IMAGENAME, SIZE: tuple = None):
+    return CTK.CTkImage(light_image=self.IMAGE(IMAGENAME), dark_image=self.IMAGE(IMAGENAME), size=SIZE)
+  
   def GET_RELEVANT_PATHDIR(self, PATHNAME):
     DIR_SCRIPT = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(DIR_SCRIPT, PATHNAME)
+  
+  def GET_LeftFrameObject(self, FRAMEOBJECT):
+    match FRAMEOBJECT:
+      case 'LOGINFRAME': return self.__Login_LeftFrame
+      case 'REGISTERFRAME': return self.__Register_LeftFrame
+
+  def GET_STRINGVARS(self, IDENTITY, VAR):
+    match IDENTITY:
+      case 'LOGIN':
+        match VAR:
+          case 'USERNAME': return self.__LI_USERNAME
+          case 'PASSWORD': return self.__LI_PASSWORD
+      case 'REGISTER':
+        match VAR:
+          case 'FIRSTNAME': return self.__FIRST_NAME
+          case 'LASTNAME': return self.__LAST_NAME
+          case 'AGE': return self.__AGE
+          case 'ADDRESS': return self.__ADDRESS
+          case 'USERNAME': return self.__REG_USERNAME
+          case 'PASSWORD': return self.__REG_PASSWORD
+  
+  def SET_STRINGVARS_TO_EMPTY(self, IDENTITY):
+    match IDENTITY:
+      case 'LOGIN':
+          self.__LI_USERNAME.set()
+          self.__LI_PASSWORD.set()
+      case 'REGISTER':
+          self.__FIRST_NAME.set()
+          self.__LAST_NAME.set()
+          self.__AGE.set()
+          self.__ADDRESS.set()
+          self.__REG_USERNAME.set()
+          self.__REG_PASSWORD.set()
+
+  def GET_ENTRY_Password_Objects(self, IDENTITY):
+    match IDENTITY:
+      case 'LOGIN': return self.__LI_ENTRY_Password
+      case 'REGISTER': return self.__REG_ENTRY_Password
+
+    self.__LI_ENTRY_Password.configure(show='')
+    self.__LI_BUTTON_Password.configure()
+
+  def GET_BUTTON_Password_Objects(self, IDENTITY):
+    match IDENTITY:
+      case 'LOGIN': return self.__LI_BUTTON_Password
+      case 'REGISTER': return self.__REG_BUTTON_Password
+
+  def Is_Password_Masked(self, MODE, IDENTITY, *SWITCH):
+    match MODE:
+      case 'SET':
+        match IDENTITY:
+          case 'LOGIN': self.__LI_Is_Password_Masked = SWITCH
+          case 'REGISTER': self.__REG_Is_Password_Masked = SWITCH
+      case 'GET':
+        match IDENTITY:
+          case 'LOGIN': return self.__LI_Is_Password_Masked
+          case 'REGISTER': return self.__REG_Is_Password_Masked
 
   def RUN_MainWindow(self):
-    self.MainWindow.mainloop()
+    self.__MainWindow.mainloop()
+    
+mw = MainWindow()
+mw.RUN_MainWindow()
