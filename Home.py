@@ -214,12 +214,10 @@ class Home:
         self.__input = ctk.CTkFrame(self.__get_main_frame(), width=self.__inputs_width(), height= self.__inputs_height(), fg_color="green")
         self.__input.place(relx = 0.75, rely = 0.35 ,anchor="center")
         
-        noteDropdown_var = ctk.StringVar()
-        
-        
+        noteDropdown_var = ctk.StringVar(value = "Needs")
         
         dropdown = ctk.CTkOptionMenu(self.__input, variable = noteDropdown_var, values = ["Needs", "Wants"], width = 300, height = 50)
-        dropdown.place( relx = 0.1, rely = 0.3, anchor = "w")
+        dropdown.place( relx = 0.2, rely = 0.1, anchor = "w")
         
     
 home = Home()
