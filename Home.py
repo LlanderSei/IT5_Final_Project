@@ -10,10 +10,10 @@ class Home:
         self.__root.mainloop()
 
     def __get_main_window_width(self):
-        return self.__get_frame_width(1)
+        return self.__get_frame_width(0.8)
     
     def __get_main_window_height(self):
-        return self.__get_frame_height(1)
+        return self.__get_frame_height(0.8)
     
     def Main_Window(self):
         self.__root.title("Expense Tracker/Home")
@@ -46,10 +46,10 @@ class Home:
     def __get_navigation_footer_frame_width(self, percentage):
         return int(self.__navigation_footer.winfo_screenheight() * percentage)
     def __get_main_frame_width(self):
-        return self.__get_frame_width(0.9)
+        return self.__get_frame_width(0.8)
     
     def __get_main_frame_height(self):
-        return self.__get_frame_height(0.85)
+        return self.__get_frame_height(0.8)
     
     def __navigation_width(self):
         return self.__get_mainframe_width(0.8)
@@ -106,14 +106,14 @@ class Home:
         self.__inputs_frame()
 
     def __set_main_frame(self):
-        self.__main_frame = ctk.CTkFrame(self.__get_root(), width=self.__get_main_frame_width(), height= self.__get_main_frame_height(), fg_color="white")
-        self.__main_frame.place(relx = 0.5, y =20, anchor= "n")
+        self.__main_frame = ctk.CTkFrame(self.__get_root(), width=self.__get_main_frame_width(), height= self.__get_main_frame_height(), fg_color="#696969")
+        self.__main_frame.place(relx = 0.5, rely = 0.5 ,anchor= "center")
 
     def __get_main_frame(self):
         return self.__main_frame
     
     def __navigation_header_frame(self):
-        self.__navigation_header = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="yellow")
+        self.__navigation_header = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="#696969")
         self.__navigation_header.place(relx = 0.5, rely = 0.025, anchor="n")
         self.__usernamebutton()
         self.__listbutton()
@@ -123,12 +123,12 @@ class Home:
         return Image.open("default.png").convert("RGBA")
     
     def __usernamebutton(self):
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="Name",width= self.__username_button_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="Name",width= self.__username_button_width(), height= 50, font=("Poppins",20),fg_color="#2c2c2c")
         self.__username_button.place(relx=0.15, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),
                      size=(70, 70))
-        self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#696969", corner_radius=10)
+        self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#2c2c2c", corner_radius=10)
         self.__photoplacement.place(relx= 0.05, rely= 0.5, anchor="center")
 
     def __listbutton(self):
@@ -140,7 +140,7 @@ class Home:
         self.__breakdown_button.place(relx=0.9, rely=0.5, anchor="center")
 
     def __navigation_footer_frame(self):
-        self.__navigation_footer = ctk.CTkFrame(self.__get_main_frame(), width= self.__note_width(), height= self.__note_height(), fg_color="yellow")
+        self.__navigation_footer = ctk.CTkFrame(self.__get_main_frame(), width= self.__note_width(), height= self.__note_height(), fg_color="#696969")
         self.__navigation_footer.place(relx = 0.7, rely = 0.60, y = -25,anchor="n")
         self.__Logout()
         self.__View_Profile()
@@ -172,7 +172,7 @@ class Home:
         self.__delete_button.place(relx = 0.46, rely = 0.75, anchor = "s")
 
     def __income_frame(self):
-        self.__income = ctk.CTkFrame(self.__get_main_frame(), width=self.__income_width(), height= self.__income_height(), fg_color="blue")
+        self.__income = ctk.CTkFrame(self.__get_main_frame(), width=self.__income_width(), height= self.__income_height(), fg_color="#696969")
         self.__income.place(relx = 0.2, rely = 0.35,anchor="center")
         
       #LABELS for the input and correspond to that is their individual entery boxes, starts here and  line 177 
@@ -202,7 +202,7 @@ class Home:
     #ENDs here
     
     def __category_frame(self):
-        self.__category = ctk.CTkFrame(self.__get_main_frame(), width=self.__category_width(), height= self.__category_height(), fg_color="red")
+        self.__category = ctk.CTkFrame(self.__get_main_frame(), width=self.__category_width(), height= self.__category_height(), fg_color="#696969")
         self.__category.place(relx = 0.45, rely = 0.35,anchor="center")
         
         #Labels and Entryboxes for category frame
@@ -226,17 +226,17 @@ class Home:
         self.__entry_wants.place( relx = 0.95, rely = 0.55, anchor = "e")
         
     def __note_frame(self):
-        self.__note = ctk.CTkFrame(self.__get_main_frame(), width=self.__note_width(), height= self.__note_height(), fg_color="red")
-        self.__note.place(relx = 0.5, rely = 0.75, anchor = "e")
+        self.__note = ctk.CTkFrame(self.__get_main_frame(), width=self.__note_width(), height= self.__note_height(), fg_color="#696969")
+        self.__note.place(relx = 0.275, rely = 0.75, anchor = "center")
         
-        self.__label_note = ctk.CTkLabel(self.__note, text = "Note/Reminder:", font = ("Poppins", 20), width = 700, height = 40, fg_color = "black", text_color = "white")
-        self.__label_note.place( relx = 0.05, rely = 0.2, anchor = "w")
+        self.__label_note = ctk.CTkLabel(self.__note, text = "Note/Reminder:", font = ("Poppins", 20), width = self.__note_width(), height = 40, fg_color = "black", text_color = "white")
+        self.__label_note.place( relx = 0.5, rely = 0.2, anchor = "center")
     
-        self.__entry_note = ctk.CTkTextbox(self.__note, width = 700, height = 150, font = ("Poppins", 20), fg_color = "gray")
-        self.__entry_note.place( relx = 0.05, rely = 0.6, anchor = "w")
+        self.__entry_note = ctk.CTkTextbox(self.__note, width = self.__note_width(), height = 150, font = ("Poppins", 20), fg_color = "gray")
+        self.__entry_note.place( relx = 0.5, rely = 0.6, anchor = "center")
 
     def __inputs_frame(self):
-        self.__input = ctk.CTkFrame(self.__get_main_frame(), width=self.__inputs_width(), height= self.__inputs_height(), fg_color="green")
+        self.__input = ctk.CTkFrame(self.__get_main_frame(), width=self.__inputs_width(), height= self.__inputs_height(), fg_color="#696969")
         self.__input.place(relx = 0.75, rely = 0.35 ,anchor="center")
         
         noteDropdown_var = ctk.StringVar(value = "Needs")
