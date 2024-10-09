@@ -44,10 +44,10 @@ class List:
         return int(self.__navigation_header.winfo_screenheight() * percentage)
     
     def __get_main_frame_width(self):
-        return self.__get_frame_width(0.9)
+        return self.__get_frame_width(0.8)
     
     def __get_main_frame_height(self):
-        return self.__get_frame_height(0.85)
+        return self.__get_frame_height(0.8)
     
     def __navigation_width(self):
         return self.__get_mainframe_width(0.8)
@@ -79,14 +79,14 @@ class List:
         self.__table_list_frame()
 
     def __set_main_frame(self):
-        self.__main_frame = ctk.CTkFrame(self.__get_root(), width=self.__get_main_frame_width(), height= self.__get_main_frame_height(), fg_color="white")
-        self.__main_frame.place(relx = 0.5, y =20, anchor= "n")
+        self.__main_frame = ctk.CTkFrame(self.__get_root(), width=self.__get_main_frame_width(), height= self.__get_main_frame_height(), fg_color="#696969")
+        self.__main_frame.place(relx = 0.5, rely = 0.5, anchor= "center")
 
     def __get_main_frame(self):
         return self.__main_frame
     
     def __navigation_header_frame(self):
-        self.__navigation_header = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="yellow")
+        self.__navigation_header = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="#696969")
         self.__navigation_header.place(relx = 0.5, rely = 0.025, anchor="n")
         self.__usernamebutton()
         self.__listbutton()
@@ -105,7 +105,7 @@ class List:
         self.__photoplacement.place(relx= 0.1, rely= 0.5, anchor="center")
 
     def __listbutton(self):
-        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="List",width= self.__list_button_width(), height= 50, font=("Poppins",20), fg_color="grey")
+        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="List",width= self.__list_button_width(), height= 50, font=("Poppins",20), fg_color="#2c2c2c")
         self.__list_button.place(relx=0.6, rely=0.5, anchor="center")
 
     def __breakdownbutton(self):
@@ -113,7 +113,7 @@ class List:
         self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __table_list_frame(self):
-        self.__table_list = ctk.CTkFrame(self.__get_main_frame(), width=self.__get_table_list_width(), height= self.__get_table_list_height(), fg_color="yellow")
+        self.__table_list = ctk.CTkFrame(self.__get_main_frame(), width=self.__get_table_list_width(), height= self.__get_table_list_height(), fg_color="#696969")
         self.__table_list.place(relx = 0.5, rely = 0.6, anchor="center")
         self.__table()
 
