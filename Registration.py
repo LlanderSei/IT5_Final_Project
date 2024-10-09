@@ -46,10 +46,6 @@ class Registration_Interface(LoginSystem):
         self.__set_registration_frame()
         self._set_left_frame()
         self._set_right_frame()
-
-        self.__is_student = ctk.StringVar(value="No")
-        self.__has_kids = ctk.StringVar(value="Without")
-
         self.create_registration_form()
         self.__rightframe_contents()  
 
@@ -70,6 +66,7 @@ class Registration_Interface(LoginSystem):
 
     def __get_rightframe_height(self):
         return self.__get_registrationframewindow_height(0.8)
+    
 
     def __set_registration_frame(self):
         self.__registrationframe = ctk.CTkFrame(self.__root, width=self.__get_registrationframe_width(), height=self.__get_registrationframe_height(), fg_color="#696969", corner_radius=0)
@@ -106,78 +103,74 @@ class Registration_Interface(LoginSystem):
         self.__set_username()
         self.__set_password()
         self.__get_hide_password()
-        self.__set_students()
-        self.__set_kids()
+        self.__get_signin()
         self.__set_signup()
-
+        
     def __set_first_name(self):
+        self.__first_name_var = ctk.StringVar()
         self.__first_name = ctk.CTkLabel(self.__get_left_frame(), text="First Name", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__first_name.place(relx= 0.2, y=30, anchor="n")
-        self.__first_name_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c")
+        self.__first_name_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", 
+        height=50, text_color="white", border_color= "#2c2c2c", textvariable= self.__first_name_var)
         self.__first_name_entry.place(relx = 0.5, y= 20, anchor="n")  
            
     def __set_last_name(self):
+        self.__last_name_var = ctk.StringVar()
         self.__last_name = ctk.CTkLabel(self.__get_left_frame(), text="Last Name", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__last_name.place(relx=0.2, y=90, anchor="n")
-        self.__last_name_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c")
+        self.__last_name_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(),
+                                               corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", textvariable= self.__last_name_var)
         self.__last_name_entry.place(relx = 0.5, y=80,anchor="n")  
     
     def __set_age(self):
+        self.__age_var = ctk.StringVar()
         self.__age = ctk.CTkLabel(self.__get_left_frame(), text="Age", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__age.place(relx=0.2, y=150, anchor="n")
-        self.__age_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c")
+        self.__age_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), 
+                                        corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", textvariable=self.__age_var)
         self.__age_entry.place(relx = 0.5, y=140,anchor="n")  
     
     def __set_address(self):
+        self.__address_var = ctk.StringVar()
         self.__address = ctk.CTkLabel(self.__get_left_frame(), text="Address", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__address.place(relx=0.2, y=210, anchor="n")
-        self.__address_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c")
+        self.__address_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(),
+                                             corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", textvariable=self.__address_var)
         self.__address_entry.place(relx = 0.5, y=200,anchor="n")  
     
     def __set_username(self):
+        self.__reg_username_var = ctk.StringVar()
         self.__reg_username = ctk.CTkLabel(self.__get_left_frame(), text="Username", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__reg_username.place(relx=0.2, y=270, anchor="n")
-        self.__reg_username_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c")
+        self.__reg_username_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(),
+                                                  corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", textvariable=self.__reg_username_var)
         self.__reg_username_entry.place(relx = 0.5, y=260,anchor="n")  
     
     def __set_password(self):
+        self.__reg_password_var = ctk.StringVar()
         self.__reg_password = ctk.CTkLabel(self.__get_left_frame(), text="Password", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__reg_password.place(relx=0.2, y=330, anchor="n")
-        self.__reg_password_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", show="*")  
+        self.__reg_password_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), 
+                                                 corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", 
+                                                 border_color= "#2c2c2c", show="*", textvariable=self.__reg_password_var)  
         self.__reg_password_entry .place(relx = 0.5, y=320,anchor="n")
     
-    def __set_students(self):
-        self.__students = ctk.CTkLabel(self.__get_left_frame(), text="Student", fg_color="#696969", text_color="white", font=self.__get_font())
-        self.__students.place(relx=0.2, y=390, anchor="n")
-        self.__students_checkbox_yes = ctk.CTkCheckBox(self.__get_left_frame(), text="Yes", variable=self.__is_student, onvalue="Yes", 
-                offvalue="No", fg_color="#696969", text_color="white", 
-                font=('Poppins', 25), height=50, width=30, border_width=2, corner_radius=0, border_color= "#2c2c2c")
-        self.__students_checkbox_yes.place(relx=0.4, y=380,anchor="n")
+    def __get_signin(self):
+        self.__sign_up = ctk.CTkButton(self.__get_left_frame(), text="Sign-In", width= self.__get_entry_width(), height= 50, font=("Poppins", 20), fg_color= "#2c2c2c", text_color="#e1e1e1", corner_radius= 35)
+        self.__sign_up.place(relx= 0.3, y = 400, anchor= "n")
 
-        self.__students_checkbox_no = ctk.CTkCheckBox(self.__get_left_frame(), text="No", variable=self.__is_student, onvalue="No", 
-                offvalue="Yes", fg_color="#696969", text_color="white", 
-                font=('Poppins', 25), height=50, width=30, border_width=2, corner_radius=0, border_color= "#2c2c2c")
-        self.__students_checkbox_no.place(relx = 0.5, y=380,anchor="n", x=42.5)  
-
-    def __set_kids(self):
-        self.__kids = ctk.CTkLabel(self.__get_left_frame(), text="Kids", fg_color="#696969", text_color="white", font=self.__get_font())
-        self.__kids.place(relx=0.2, y=450, anchor="n")
-
-        
-        self.__kids_checkbox_yes = ctk.CTkCheckBox(self.__get_left_frame(), text="With", variable=self.__has_kids, onvalue="With", 
-                offvalue="Without", fg_color="#696969", text_color="white", 
-                font=('Poppins', 25), height=30, width=30, border_width=2, corner_radius=0, border_color= "#2c2c2c")
-        self.__kids_checkbox_yes.place(relx=0.4, y=440,anchor="n", x=5)
-
-        self.__kids_checkbox_no = ctk.CTkCheckBox(self.__get_left_frame(), text="Without", variable=self.__has_kids, onvalue="Without", 
-                offvalue="With", fg_color="#696969", text_color="white", 
-                font=('Poppins', 25), height=30, width=30, border_width=2, corner_radius=0 , border_color= "#2c2c2c")
-        self.__kids_checkbox_no.place(relx=0.6, y=440,anchor="n")
-    
     def __set_signup(self):
         self.__signup = ctk.CTkButton(self.__get_left_frame(), text="Sign-Up", fg_color="#2c2c2c", text_color="white", 
-                      font=self.__get_font(), corner_radius=35, height=50, width=self.__get_entry_width())
-        self.__signup.place(relx=0.5, y=500,anchor="n")
+                      font=self.__get_font(), corner_radius=35, height=50, width=self.__get_entry_width(), command= lambda: self.__display())
+        self.__signup.place(relx=0.7, y=400,anchor="n")
+
+    def __display(self):
+        print(self.__first_name_var.get())
+        print(self.__last_name_var.get())
+        print(self.__age_var.get())
+        print(self.__address_var.get())
+        print(self.__reg_username_var.get())
+        print(self.__reg_password_var.get())
 
     def __rightframe_contents(self):
         self.__photo = ctk.CTkImage(light_image=self.get_image(),
