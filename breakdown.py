@@ -161,38 +161,46 @@ class Breakdown:
         self.__category_table_display.insert('','end', values=('Needs', '', '', ''))
         self.__category_table_display.insert('','end', values=('Wants', '', '', ''))
         self.__category_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
-        self.__category_table_display.bind("<ButtonPress-1>", self.prevent_drag_category)
-        self.__category_table_display.bind("<ButtonPress-1>", self.clear_selection_on_double_click_category)
-    def clear_selection_on_double_click_category(self, event):
-        """Handle clearing selection if the same row is clicked twice."""
+        self.__category_table_display.bind("<ButtonPress-1>", self.handle_click_category)
+
+    def handle_click_category(self, event):
+        """Handle the click event for both preventing drag and clearing selection."""
+        # Check if the click is on a separator (to prevent dragging)
+        if self.__category_table_display.identify_region(event.x, event.y) == "separator":
+            return "break"  # Prevent dragging if clicked on a separator
+
+        # Handle clearing selection on double click
         selected_item = self.__category_table_display.selection()
+        current_focus = self.__category_table_display.focus()
+
         if selected_item:
-            # Check if the item clicked is already selected
-            current_focus = self.__category_table_display.focus()
             if current_focus == selected_item[0]:
                 # Deselect if the same item is clicked again
                 self.__category_table_display.selection_remove(selected_item[0])
                 self.__category_table_display.selection_clear()
+                return "break"  # Prevent any further processing
 
-    def clear_selection_on_double_click_savings(self, event):
-        """Handle clearing selection if the same row is clicked twice."""
+        # Update the last clicked item
+        self.last_clicked_item = current_focus  # Set this if needed for further logic
+    def handle_click_save(self, event):
+        """Handle the click event for both preventing drag and clearing selection."""
+        # Check if the click is on a separator (to prevent dragging)
+        if self.__savings_table_display.identify_region(event.x, event.y) == "separator":
+            return "break"  # Prevent dragging if clicked on a separator
+
+        # Handle clearing selection on double click
         selected_item = self.__savings_table_display.selection()
+        current_focus = self.__savings_table_display.focus()
+
         if selected_item:
-            # Check if the item clicked is already selected
-            current_focus = self.__savings_table_display.focus()
             if current_focus == selected_item[0]:
                 # Deselect if the same item is clicked again
                 self.__savings_table_display.selection_remove(selected_item[0])
                 self.__savings_table_display.selection_clear()
-                
-    def prevent_drag_category(self,event):
-        if self.__category_table_display.identify_region(event.x, event.y) == "separator":
-    
-            return "break"
-    def prevent_drag_savings(self,event):   
-        if self.__savings_table_display.identify_region(event.x, event.y) == "separator":
-            return "break"
+                return "break"  # Prevent any further processing
 
+        # Update the last clicked item
+        self.last_clicked_item = current_focus  # Set this if needed for further logic
     def __savings(self):
         self.__style_savings = ttk.Style()
         self.__style_savings.configure("Savings.Treeview", font=("Poppins", 20), rowheight=85, bordercolor="Black", borderwidth=2,background="black", fieldbackground="black", foreground="white")
@@ -206,6 +214,5 @@ class Breakdown:
         self.__savings_table_display.insert('','end', values=('Savings:', ''))
         self.__savings_table_display.insert('','end', values=('Total Expenses:', ''))
         self.__savings_table_display.insert('','end', values=('Remaining:', ''))
-        self.__savings_table_display.bind("<ButtonPress-1>", self.prevent_drag_savings)
-        self.__savings_table_display.bind("<ButtonPress-1>", self.clear_selection_on_double_click_savings)
+        self.__savings_table_display.bind("<ButtonPress-1>", self.handle_click_save)
 window = Breakdown()
