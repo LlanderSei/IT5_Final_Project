@@ -1,6 +1,6 @@
 from customtkinter import *
 import customtkinter as ctk
-
+from PIL import Image
 class Home:
     def __init__(self):
         #self.__parent = parent
@@ -40,6 +40,11 @@ class Home:
     def __get_frame_height(self, percentage):
         return int(self.__root.winfo_screenheight() * percentage)
     
+    def __get_navigation_header_frame_width(self, percentage):
+        return int(self.__navigation_header.winfo_screenheight() * percentage)
+    
+    def __get_navigation_footer_frame_width(self, percentage):
+        return int(self.__navigation_footer.winfo_screenheight() * percentage)
     def __get_main_frame_width(self):
         return self.__get_frame_width(0.9)
     
@@ -82,6 +87,15 @@ class Home:
     def __inputs_height(self):
         return self.__get_mainframe_height(0.3)
     
+    def __username_button_width(self):
+        return self.__get_navigation_header_frame_width(0.35)
+    
+    def __list_button_width(self):
+        return self.__get_navigation_header_frame_width(0.2)
+    
+    def __breakdown_button_width(self):
+        return self.__get_navigation_header_frame_width(0.2)
+    
     def _center_frame(self):#It is the method that holds all of the frames
         self.__set_main_frame()
         self.__navigation_header_frame()
@@ -104,18 +118,26 @@ class Home:
         self.__usernamebutton()
         self.__listbutton()
         self.__breakdownbutton()
-
+    
+    def __get_image_logo(self):
+        return Image.open("default.png").convert("RGBA")
+    
     def __usernamebutton(self):
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__username_button.place(relx=0.1, rely=0.5, anchor="center")
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="Name",width= self.__username_button_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
+        self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
+                     dark_image= self.__get_image_logo(),
+                     size=(70, 70))
+        self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#696969", corner_radius=10)
+        self.__photoplacement.place(relx= 0.1, rely= 0.5, anchor="center")
 
     def __listbutton(self):
-        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="List",width= 100, height= 50, font=("Poppins",20), fg_color="grey")
-        self.__list_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="List",width= self.__list_button_width(), height= 50, font=("Poppins",20), fg_color="grey")
+        self.__list_button.place(relx=0.6, rely=0.5, anchor="center")
 
     def __breakdownbutton(self):
-        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="breakdown",width= 100, height= 50, font=("Poppins",20), fg_color="grey")
-        self.__breakdown_button.place(relx=0.7, rely=0.5, anchor="center")
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), text="breakdown",width= self.__breakdown_button_width(), height= 50, font=("Poppins",20), fg_color="grey")
+        self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __navigation_footer_frame(self):
         self.__navigation_footer = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="yellow")
@@ -126,25 +148,28 @@ class Home:
         self.__update()
         self.__delete()
     
+    def __get_navigation_footer_width(self):
+        return self.__get_navigation_footer_frame_width(0.2)
+    
     def __Logout(self):
-        self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
+        self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Log-out",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
         self.__logout_button.place(relx=0.1, rely=0.5, anchor="center")
 
     def __View_Profile(self):
-        self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__view_button.place(relx=0.2, rely=0.5, anchor="center")
+        self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="View Profile",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__view_button.place(relx=0.3, rely=0.5, anchor="center")
 
     def __add(self):
-        self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__add_button.place(relx=0.3, rely=0.5, anchor="center")
+        self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Add",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__add_button.place(relx=0.5, rely=0.5, anchor="center")
 
     def __update(self):
-        self.__update_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__update_button.place(relx=0.4, rely=0.5, anchor="center")
+        self.__update_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Update",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__update_button.place(relx=0.7, rely=0.5, anchor="center")
 
     def __delete(self):
-        self.__delete_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
-        self.__delete_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.__delete_button = ctk.CTkButton(self.__get_navigation_footer_frame(), text="Delete",width= self.__get_navigation_footer_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__delete_button.place(relx=0.9, rely=0.5, anchor="center")
 
     def __income_frame(self):
         self.__income = ctk.CTkFrame(self.__get_main_frame(), width=self.__income_width(), height= self.__income_height(), fg_color="blue")
