@@ -1,6 +1,6 @@
 import tkinter as tk
 import customtkinter as ctk  
-
+from tkinter import ttk
 class Breakdown:
     def __init__(self):
         #self.__parent = parent
@@ -63,6 +63,15 @@ class Breakdown:
     def __get_main_frame(self):
         return self.__main_frame
     
+    def __get_navigation_frame(self):
+        return self.__navigation_header
+    
+    def __get_category_table_frame(self):
+        return self.__category_table
+    
+    def __get_savings_table_frame(self):
+        return self.__saving_table
+    
     def __navigation_width(self):
         return self.__get_mainframe_width(0.8)
     
@@ -84,59 +93,69 @@ class Breakdown:
     def __navigation_frames(self):
         self.__navigation_header = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="yellow")
         self.__navigation_header.place(relx = 0.5, rely = 0.025, anchor="n")
+        self.__usernamebutton()
+        self.__listbutton()
+        self.__breakdownbutton()
 
     def __category_table_frames(self):
         self.__category_table = ctk.CTkFrame(self.__get_main_frame(), width=self.__category_width(), height= self.__category_height(), fg_color="green")
         self.__category_table.place(relx = 0.5, rely = 0.4, anchor="center")
+        self.__category()
 
     def __savings_table_frames(self):
         self.__saving_table = ctk.CTkFrame(self.__get_main_frame(), width=self.__saving_width(), height= self.__saving_height(), fg_color="blue")
         self.__saving_table.place(relx = 0.5, rely = 0.6, anchor="n")
-    # def __set_breakdown_frame(self, root):
-    #     self.breakdownframe = ctk.CTkFrame(root, width=1000, height=650, fg_color="#696969", corner_radius=0)
-    #     self.breakdownframe.place(relx=0.5, rely=0.5, anchor="center")
+        self.__savings()
+    
+    def __usernamebutton(self):
+        self.__username_button = ctk.CTkButton(self.__get_navigation_frame(), text="Name",width= 100, height= 50, font=("Poppins",20),fg_color="grey")
+        self.__username_button.place(relx=0.1, rely=0.5, anchor="center")
+
+    def __listbutton(self):
+        self.__list_button = ctk.CTkButton(self.__get_navigation_frame(), text="List",width= 100, height= 50, font=("Poppins",20), fg_color="grey")
+        self.__list_button.place(relx=0.5, rely=0.5, anchor="center")
+
+    def __breakdownbutton(self):
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_frame(), text="breakdown",width= 100, height= 50, font=("Poppins",20), fg_color="grey")
+        self.__breakdown_button.place(relx=0.7, rely=0.5, anchor="center")
+
+    def __category(self):
+        self.__style = ttk.Style()
+        self.__style.configure("Treeview", font=("Poppins", 20), rowheight=120)
+        self.__style.configure("Treeview.Heading", font=("Poppins", 25, "bold"))
+        self.__style.configure("Treeview", bordercolor="black", borderwidth=1) 
+        self.__category_table_display = ttk.Treeview(self.__get_category_table_frame(), columns= ('Category', 'Total', 'Budget', 'Remaining'), show= 'headings', height=2)
+        self.__category_table_display.heading('Category', text= 'Category')
+        self.__category_table_display.heading('Total', text= 'Total')
+        self.__category_table_display.heading('Budget', text= 'Budget')
+        self.__category_table_display.heading('Remaining', text= 'Remaining')
+        self.__category_table_display.column('Category', width= 100, stretch= True)
+        self.__category_table_display.column('Total', width= 100, stretch= True)
+        self.__category_table_display.column('Budget', width= 100, stretch= True)
+        self.__category_table_display.column('Remaining', width= 100, stretch= True)
+        self.__category_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
+        self.__category_table_display.insert('','end', values=('Needs', '', '', ''))
+        self.__category_table_display.insert('','end', values=('Wants', '', '', ''))
+        self.__category_table_display.bind("<ButtonPress-1>", self.prevent_drag)
+    def prevent_drag(self,event):
+        if self.__category_table_display.identify_region(event.x, event.y) == "separator":
+            return "break"
         
-    #     category = ctk.CTkLabel(self.breakdownframe, text="Category", fg_color="#696969", text_color="white", 
-    #                                     font=("Poppins", 20))
-    #     category.place(x=90, y=130) 
+        if self.__savings_table_display.identify_region(event.x, event.y) == "separator":
+            return "break"
 
-
-    #     Tool  = ctk.CTkLabel(self.breakdownframe, text="Tool", fg_color="#696969", text_color="white", 
-    #                                     font=("Poppins", 20))
-    #     Tool.place(x=350, y=130) 
-
-    #     Budget = ctk.CTkLabel(self.breakdownframe, text="Budget", fg_color="#696969", text_color="white", 
-    #                                     font=("Poppins", 20))
-    #     Budget.place(x=560, y=130) 
-
-    #     Remaining = ctk.CTkLabel(self.breakdownframe, text="Remaining", fg_color="#696969", text_color="white", 
-    #                                     font=("Poppins", 20))
-    #     Remaining.place(x=790, y=130) 
-
-
-
-
-    #     Needs = ctk.CTkLabel(self.breakdownframe, text="Needs", fg_color="#696969", text_color="black", 
-    #                                   font=("Poppins", 20))
-    #     Needs.place(x=100, y=240) 
-
-
-    #     Wants = ctk.CTkLabel(self.breakdownframe, text="Wants", fg_color="#696969", text_color="black", 
-    #                                     font=("Poppins", 20))
-    #     Wants.place(x=100, y=370) 
-
-    #     button = ctk.CTkButton(self.breakdownframe, text="Breakdown", fg_color="#2c2c2c", text_color="white", 
-    #                             font=("Poppins", 15), corner_radius=35, height=50, width=200)
-    #     button.place(x=540, y=30)
-
-    #     button = ctk.CTkButton(self.breakdownframe, text="Budgeting", fg_color="#2c2c2c", text_color="white", 
-    #                             font=("Poppins", 15), corner_radius=35, height=50, width=200)
-    #     button.place(x=750, y=30)
-
-
-
-
-
-
-
+    def __savings(self):
+        self.__style = ttk.Style()
+        self.__style.configure("Treeview", font=("Poppins", 20), rowheight=80, bordercolor="Black", borderwidth=2)
+        self.__style.configure("Treeview.Heading", font=("Poppins", 25, "bold"),bordercolor="Black", borderwidth=2)
+        self.__savings_table_display = ttk.Treeview(self.__get_savings_table_frame(), columns= ('Savings', 'Amount'), show= 'headings', height=3)
+        self.__savings_table_display.heading('Savings', text= 'Savings')
+        self.__savings_table_display.heading('Amount', text= 'Amount')
+        self.__savings_table_display.column('Savings', width= 100, stretch= True)
+        self.__savings_table_display.column('Amount', width= 100, stretch= True)
+        self.__savings_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
+        self.__savings_table_display.insert('','end', values=('Savings:', 'Hello'))
+        self.__savings_table_display.insert('','end', values=('Total Expenses:', ''))
+        self.__savings_table_display.insert('','end', values=('Remaining:', ''))
+        self.__savings_table_display.bind("<ButtonPress-1>", self.prevent_drag)
 window = Breakdown()
