@@ -2,34 +2,35 @@ import mysql.connector
 import hashlib
 
 class CreateDatabase:
-  __AttempDBLogin = 3
 
   def __init__(self):
     self.__MYSQLConnection = None
     self.__MYSQLCursor = None
-    self.__AttempDBLogin
 
-  def LOGINDATABASE(self):
-    while self.__AttempDBLogin > 0:
-      print(f'Attempts left: {self.__AttempDBLogin}')
-      try:
-        print('Login to your database: ')
-        HOST = input('Host: ').strip()
-        USER = input('User: ').strip()
-        PASSWORD = input('Password: ').strip()
-
-        self.__MYSQLConnection = mysql.connector.connect(host = f'{HOST}', user = f'{USER}', password =f'{PASSWORD}')
-        self.__MYSQLCursor = self.__MYSQLConnection.cursor()
-        print(f'Connection to a Database has been established: {self.__MYSQLConnection}')
-        return 1
-      except mysql.connector.Error as ERR:
-        self.__AttempDBLogin -= 1
-        if self.__AttempDBLogin == 0:
-          print(f'Attempts has been exhausted, please rerun the program. Error: {ERR}')
-        else:
-          print(f'Error: {ERR}')
-          print('Try again.')
-    return 0
+    self.__DEFAULTLOGIN()
+    
+  def __DEFAULTLOGIN(self):
+    try:
+      self.__MYSQLConnection = mysql.connector.connect(host='localhost', user='root', password='')
+      self.__MYSQLCursor = self.__MYSQLConnection.cursor()
+      self.buildDatabase()
+      print(self.__MYSQLConnection)
+    except mysql.connector.Error as ERR:
+      print(f'Connection Error. Error {ERR}')
+      print('You may need to change the credentials of the database by pressing that DB icon.')
+      self.__MYSQLConnection = None
+      self.__MYSQLCursor = None
+  
+  def LOGINDATABASE(self, HOST, USER, PASSWORD):
+    try:
+      self.__MYSQLConnection = mysql.connector.connect(host = f'{HOST}', user = f'{USER}', password =f'{PASSWORD or ''}')
+      self.__MYSQLCursor = self.__MYSQLConnection.cursor()
+      self.buildDatabase()
+      return 'SUCCESSFUL'
+    except mysql.connector.Error:
+      self.__MYSQLConnection = None
+      self.__MYSQLCursor = None
+      return 'ERROR'
 
   def CURSOR(self):
     return self.__MYSQLCursor
@@ -38,7 +39,10 @@ class CreateDatabase:
     return self.__MYSQLConnection
   
   def HAS_CONNECTION(self):
-    return self.__MYSQLConnection.is_connected()
+    try:
+      if self.__MYSQLConnection.is_connected(): return 1
+    except Exception:
+      return 0
   
   def buildDatabase(self):
     # CREATES DATABASE IF NOT EXISTS YET, THEN INSTANTLY USES THAT DATABASE
@@ -56,21 +60,20 @@ class CreateDatabase:
                                 USER_ID integer,
                                 foreign key (USER_ID) references USERS(USER_ID)
                                   on delete cascade on update restrict,
-                                GIVEN_NAME varchar(100) not null,
-                                MIDDLE_INITIAL varchar(100),
+                                FIRST_NAME varchar(100) not null,
                                 LAST_NAME varchar(100),
                                 AGE integer,
                                 ADDRESS text,
                                 BALANCE float(50,2));''')
     
     # CREATE THE TABLE WITH COLUMNS FOR USER'S LIFE STATES
-    self.CURSOR().execute('''create table if not exists USER_LIFE_STATES(
-                                USER_ID integer,
-                                foreign key (USER_ID) references USERS(USER_ID)
-                                  on delete cascade on update restrict,
-                                IS_STUDENT boolean,
-                                HAS_KIDS boolean,
-                                IS_FREAKY boolean);''')
+    # self.CURSOR().execute('''create table if not exists USER_LIFE_STATES(
+    #                             USER_ID integer,
+    #                             foreign key (USER_ID) references USERS(USER_ID)
+    #                               on delete cascade on update restrict,
+    #                             IS_STUDENT boolean,
+    #                             HAS_KIDS boolean,
+    #                             IS_FREAKY boolean);''')
     
     # CREATES TABLE WITH COLUMNS FOR USER'S NEEDS AND WANTS, ETC.
     self.CURSOR().execute('''create table if not exists USER_LIFE_OBJECTIVES(
@@ -94,13 +97,25 @@ class DatabaseInteraction:
   __TEMP_USER_CRED = any
 
   def __init__(self):
+    self.__USER_ID, self.__TEMP_USER_CRED
     self.__DB = CreateDatabase()
 
-    self.__USER_ID, self.__TEMP_USER_CRED
-    self.__USER_ID
+  def LoginDatabase(self, HOST, USER, PASSWORD):
+    return self.__DB.LOGINDATABASE(HOST, USER, PASSWORD)
 
-  def RegisterUser(self, OBJECTS):
-    USERNAME, PASSWORD, GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS = OBJECTS
+  def HasConnection(self):
+    return self.__DB.HAS_CONNECTION()
+  
+  def GetConnector(self):
+    return self.__DB.CONNECTOR()
+
+  def GET_User_ID(self):
+    return self.__USER_ID
+
+  def BuildDatabase(self):
+    self.__DB.buildDatabase()
+
+  def RegisterUser(self, FIRSTNAME, LASTNAME, AGE, ADDRESS, USERNAME, PASSWORD):
     try:
       if not self.__IsUserAlreadyExists(USERNAME):
         self.__DB.CURSOR().execute('insert into USERS(USERNAME, HASHED_PASSWORD) values (%s, SHA2(%s, 256))', (USERNAME, PASSWORD))
@@ -109,24 +124,23 @@ class DatabaseInteraction:
 
         if getFetched: tempID = getFetched[0]
         self.__DB.CURSOR().execute('insert into USER_PASSWORDS(USER_ID, UNHASHED_PASSWORD) values (%s, %s)', (tempID, PASSWORD))
-        self.__DB.CURSOR().execute('insert into USER_INFOS(USER_ID, GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS) values (%s, %s, %s, %s, %s, %s)', (tempID, GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS))
-        self.__InstanceUserLifeStatus(tempID)
+        self.__DB.CURSOR().execute('insert into USER_INFOS(USER_ID, FIRST_NAME, LAST_NAME, AGE, ADDRESS) values (%s, %s, %s, %s, %s)', (tempID, FIRSTNAME, LASTNAME, AGE, ADDRESS))
+        # self.__InstanceUserLifeStatus(tempID)
         self.__DB.CONNECTOR().commit()
+        return 'REGSUCCESS'
+      else:
+        return 'USERALREADYEXIST'
     except mysql.connector.Error as ERR:
       self.__DB.CONNECTOR().rollback()
-      print(f'Error: {ERR}')
+      return 'REGERROR'
   
-  def LoginUser(self, MODE, CREDENTIAL):
-    match MODE:
-      case 'USERNAME':
-        self.__DB.CURSOR().execute(f'select * from USERS where USERNAME = \'{CREDENTIAL.lower()}\'')
-        self.__TEMP_USER_CRED = self.__DB.CURSOR().fetchone()
-        if self.__TEMP_USER_CRED: return 'USERFOUND'
-        else: return 0
-
-      case 'PASSWORD':
-        if self.__TEMP_USER_CRED[2] == self.__hashedPassword(CREDENTIAL): return 'PASSWORDMATCHED'
-        else: return 0
+  def LoginUser(self, USERNAME, PASSWORD):
+    self.__DB.CURSOR().execute(f"select * from USERS where USERNAME = '{USERNAME}' and HASHED_PASSWORD = '{self.__hashedPassword(PASSWORD)}'")
+    self.__TEMP_USER_CRED = self.__DB.CURSOR().fetchone()
+    if self.__TEMP_USER_CRED:
+      self.__USER_ID = self.__TEMP_USER_CRED[0]
+      return 'LOGINSUCCESS'
+    else: return 'LOGINERROR'
 
   def FetchUserAllInfo(self, FETCH):
     match FETCH:
