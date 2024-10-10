@@ -124,12 +124,22 @@ class Registration_Interface(LoginSystem):
     
     def __set_age(self):
         self.__age_var = ctk.StringVar()
+
         self.__age = ctk.CTkLabel(self.__get_left_frame(), text="Age", fg_color="#696969", text_color="white", font=self.__get_font())
         self.__age.place(relx=0.2, y=150, anchor="n")
-        self.__age_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(), 
-                                        corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white", border_color= "#2c2c2c", textvariable=self.__age_var)
-        self.__age_entry.place(relx = 0.5, y=140,anchor="n")  
-    
+
+        validate_input = self.__root.register(self.__validate_age_input)
+
+        self.__age_entry = ctk.CTkEntry(self.__get_left_frame(), font=self.__get_font(), width=self.__get_entry_width(),
+                                    corner_radius=35, fg_color="#2c2c2c", height=50, text_color="white",
+                                    border_color="#2c2c2c", textvariable=self.__age_var,
+                                    validate="key", validatecommand=(validate_input, '%P'))  # Validate on each key press
+        self.__age_entry.place(relx=0.5, y=140, anchor="n")
+
+    def __validate_age_input(self, input_str):
+        
+        return input_str.isdigit() or input_str == ""
+         
     def __set_address(self):
         self.__address_var = ctk.StringVar()
         self.__address = ctk.CTkLabel(self.__get_left_frame(), text="Address", fg_color="#696969", text_color="white", font=self.__get_font())
@@ -201,3 +211,6 @@ class Registration_Interface(LoginSystem):
                      size=(40, 25))
         self.__show_password = ctk.CTkButton(self.__get_left_frame(), image=self.__photo, text="", fg_color="#2c2c2c", width= 10, border_width= 2, border_color= "#2c2c2c", corner_radius=10)
         self.__show_password.place(relx= 0.5, y = 330, anchor= "n", x = 180)
+        
+    
+    
