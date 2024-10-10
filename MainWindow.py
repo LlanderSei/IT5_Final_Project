@@ -126,7 +126,7 @@ class MainWindow:
     CTK.CTkLabel(self.__Register_LeftFrame, text="*Password", fg_color=self.__Colors('DIMGRAY'), text_color="white", font=('Poppins Bold',20)).place(relx=0.25, y=470, anchor="n")
     self.__REG_ENTRY_Password = CTK.CTkEntry(self.__Register_LeftFrame, font=('Poppins',20), width=self.__Entry_Width * .8, corner_radius=35, fg_color=self.__Colors('VERYDARKGRAY'), height=50, text_color="white", border_color=self.__Colors('VERYDARKGRAY'), show='*', textvariable=self.__REG_PASSWORD)
     self.__REG_ENTRY_Password.place(relx = 0.6, y=460,anchor="n")
-    self.__REG_BUTTON_Password = CTK.CTkButton(self.__Register_LeftFrame, text='', image=self.CTKIMAGE('show_eye', (40, 20)), fg_color=self.__Colors('VERYDARKGRAY'), border_color=self.__Colors('VERYDARKGRAY'), border_width=2, corner_radius=10, width=10)
+    self.__REG_BUTTON_Password = CTK.CTkButton(self.__Register_LeftFrame, text='', image=self.CTKIMAGE('show_eye', (40, 20)), fg_color=self.__Colors('VERYDARKGRAY'), border_color=self.__Colors('VERYDARKGRAY'), border_width=2, corner_radius=10, width=10, command= lambda: self.MWF.BUTTON_LI_Password_Register())
     self.__REG_BUTTON_Password.place(relx= 0.61, y = 470, anchor= "n", x = 180)
 
     "/ REGISTER AND RETURN BUTTON"
