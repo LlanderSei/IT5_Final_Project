@@ -1,2 +1,0 @@
-Cat in a String,Jake,2020
-Iron Farm,Reblon,2024
