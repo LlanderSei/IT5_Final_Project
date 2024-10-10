@@ -5,8 +5,8 @@ class CreateDatabase:
   __AttempDBLogin = 3
 
   def __init__(self):
-    self.__MYSQLConnection = any
-    self.__MYSQLCursor = any
+    self.__MYSQLConnection = None
+    self.__MYSQLCursor = None
     self.__AttempDBLogin
 
   def LOGINDATABASE(self):
@@ -36,7 +36,10 @@ class CreateDatabase:
   
   def CONNECTOR(self):
     return self.__MYSQLConnection
-
+  
+  def HAS_CONNECTION(self):
+    return self.__MYSQLConnection.is_connected()
+  
   def buildDatabase(self):
     # CREATES DATABASE IF NOT EXISTS YET, THEN INSTANTLY USES THAT DATABASE
     self.CURSOR().execute('create database if not exists USER_FINANCIAL_DATABASE')
@@ -93,12 +96,7 @@ class DatabaseInteraction:
   def __init__(self):
     self.__DB = CreateDatabase()
 
-    if self.__DB.LOGINDATABASE():
-      self.__DB.buildDatabase()
-    else: quit()
-
     self.__USER_ID, self.__TEMP_USER_CRED
-    
     self.__USER_ID
 
   def RegisterUser(self, OBJECTS):
