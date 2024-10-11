@@ -3,13 +3,23 @@ from PIL import Image
 from tkinter import ttk
 import os
 class List:
-    def __init__(self):
-        #self.__parent = parent
-        self.__root = ctk.CTk()
-        #self.__root.protocol("WM_DELETE_WINDOW", self.__on_close)
+    def __init__(self, parent):
+        self.__parent = parent
+        self.__root = ctk.CTkToplevel(self.__parent.GET_TL_Root())
+        self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_List)
+        self.__root.withdraw()
         self.Main_Window()
-        self.__root.mainloop()
 
+    def TL_List_Show(self):
+        self.__root.deiconify()
+        self.__root.after(50, self.__root.state('zoomed'))
+
+    def TL_PROTOCOL_List(self):
+        self.__root.withdraw()
+
+    def GET_TL_RootList(self):
+        return self.__root
+    
     def __get_main_window_width(self):
         return self.__get_frame_width(1)
     
@@ -17,8 +27,8 @@ class List:
         return self.__get_frame_height(1)
     
     def Main_Window(self):
-        self.__root.title("Expense Tracker/Home")
-        self.__root.after(50, lambda: self.__get_fullscreen())
+        self.__root.title("Expense Tracker/List")
+        # self.__root.after(50, lambda: self.__get_fullscreen())
         self.__root.configure(fg_color = "black")
         self.__root.minsize(self.__get_main_window_width(),self.__get_main_window_height())
         self._center_frame()
@@ -161,4 +171,4 @@ class List:
     def GET_RELEVANT_PATHDIR(self, IMAGENAME):
       path = os.path.dirname(os.path.abspath(__file__))
       return os.path.join(path, IMAGENAME)
-window = List()
+# window = List()

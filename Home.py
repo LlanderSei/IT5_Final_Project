@@ -2,13 +2,17 @@ from customtkinter import *
 import customtkinter as ctk
 from PIL import Image
 import os
+from List import List
+from Breakdown import Breakdown
+
 class Home:
     def __init__(self, SUB, MAIN):
         self.__PT = MAIN
         self.__SP = SUB
         self.__root = ctk.CTkToplevel(self.__PT.GET_RootWindowObject())
         self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_Home)
-
+        self.__List = List(self)
+        self.__Breakdown = Breakdown(self)
         self.__INITIATE_OBJECTS()
         self.Main_Window()
         # self.__root.mainloop()
@@ -180,7 +184,7 @@ class Home:
     def __listbutton(self):
         self.__list_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_list_logo(), size=(40,40))
         
-        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__list_pht, text = "List", corner_radius = 25, width= self.__list_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000")
+        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__list_pht, text = "List", corner_radius = 25, width= self.__list_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.__List.TL_List_Show())
         self.__list_button.place(relx=0.59, rely=0.5, anchor="center")
 
     def __get_list_logo(self):
@@ -189,7 +193,7 @@ class Home:
     def __breakdownbutton(self):
         self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_logo(), dark_image = self.__get_breakdown_logo(), size=(40,40))
         
-        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000")
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.__Breakdown.TL_Breakdown_Show())
         self.__breakdown_button.place(relx = 0.830, rely = 0.5, anchor = "center")
     
     def __get_breakdown_logo(self):
