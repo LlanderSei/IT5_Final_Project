@@ -64,16 +64,19 @@ class CreateDatabase:
                                 LAST_NAME varchar(100),
                                 AGE integer,
                                 ADDRESS text,
-                                BALANCE float(50,2));''')
+                                NOTES text,
+                                MONTH_OF text);''')
     
     # CREATE THE TABLE WITH COLUMNS FOR USER'S LIFE STATES
-    # self.CURSOR().execute('''create table if not exists USER_LIFE_STATES(
-    #                             USER_ID integer,
-    #                             foreign key (USER_ID) references USERS(USER_ID)
-    #                               on delete cascade on update restrict,
-    #                             IS_STUDENT boolean,
-    #                             HAS_KIDS boolean,
-    #                             IS_FREAKY boolean);''')
+    self.CURSOR().execute('''create table if not exists USER_BANK_INFOS(
+                                USER_ID integer,
+                                foreign key (USER_ID) references USERS(USER_ID)
+                                  on delete cascade on update restrict,
+                                ADD_SAVINGS float(50,2),
+                                SAVINGS float(50,2),
+                                STIPEND float(50,2),
+                                BUDGET_NEEDS float(50,2),
+                                BUDGET_WANTS float(50,2));''')
     
     # CREATES TABLE WITH COLUMNS FOR USER'S NEEDS AND WANTS, ETC.
     self.CURSOR().execute('''create table if not exists USER_LIFE_OBJECTIVES(
@@ -94,7 +97,7 @@ class CreateDatabase:
 
 class DatabaseInteraction:
   __USER_ID = int
-  __TEMP_USER_CRED = any
+  __TEMP_USER_CRED = None
 
   def __init__(self):
     self.__USER_ID, self.__TEMP_USER_CRED
@@ -124,8 +127,8 @@ class DatabaseInteraction:
 
         if getFetched: tempID = getFetched[0]
         self.__DB.CURSOR().execute('insert into USER_PASSWORDS(USER_ID, UNHASHED_PASSWORD) values (%s, %s)', (tempID, PASSWORD))
-        self.__DB.CURSOR().execute('insert into USER_INFOS(USER_ID, FIRST_NAME, LAST_NAME, AGE, ADDRESS) values (%s, %s, %s, %s, %s)', (tempID, FIRSTNAME, LASTNAME, AGE, ADDRESS))
-        # self.__InstanceUserLifeStatus(tempID)
+        self.__DB.CURSOR().execute('insert into USER_INFOS(USER_ID, FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF) values (%s, %s, %s, %s, %s, %s, %s)', (tempID, FIRSTNAME, LASTNAME, AGE, ADDRESS, None, None))
+        self.__InstantiateUserObjects(tempID)
         self.__DB.CONNECTOR().commit()
         return 'REGSUCCESS'
       else:
@@ -145,30 +148,54 @@ class DatabaseInteraction:
   def FetchUserAllInfo(self, FETCH):
     match FETCH:
       case 'USER':
-        self.__DB.CURSOR().execute(f'select USER_ID, USERNAME from USERS where USER_ID = \'{self.__USER_ID}\'')
+        self.__DB.CURSOR().execute(f"select USER_ID, USERNAME from USERS where USER_ID = '{self.__USER_ID}'")
         USER_ID, USERNAME = self.__DB.CURSOR().fetchone()
         return USER_ID, USERNAME
       case 'USERINFO':
-        self.__DB.CURSOR().execute(f'select GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS, BALANCE from USER_INFOS where USER_ID = \'{self.__USER_ID}\'')
-        GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS, BALANCE = self.__DB.CURSOR().fetchone()
-        return GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS, BALANCE
-      case 'LIFESTATUS':
-        self.__DB.CURSOR().execute(f'select IS_STUDENT, HAS_KIDS, IS_FREAKY from USER_LIFE_STATUSES where USER_ID = \'{self.__USER_ID}\'')
-        IS_STUDENT, HAS_KIDS, IS_FREAKY = self.__DB.CURSOR().fetchone()
-        return IS_STUDENT, HAS_KIDS, IS_FREAKY
+        self.__DB.CURSOR().execute(f"select FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF from USER_INFOS where USER_ID = '{self.__USER_ID}'")
+        FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DB.CURSOR().fetchone()
+        return FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF
+      case 'BANKS':
+        self.__DB.CURSOR().execute(f"select ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS from USER_BANK_INFOS where USER_ID = '{self.__USER_ID}'")
+        ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS = self.__DB.CURSOR().fetchone()
+        return ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS
       case 'OBJECTIVES':
-        self.__DB.CURSOR().execute(f'select OBJECTIVE, CATEGORY, COST from USER_LIFE_OBJECTIVES where USER_ID = \'{self.__USER_ID}\'')
+        self.__DB.CURSOR().execute(f"select OBJECTIVE, CATEGORY, COST from USER_LIFE_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
         OBJECTIVELIST = self.__DB.CURSOR().fetchall()
         return OBJECTIVELIST
 
-  def ModifyLifeStatuses(self, *BOOLEANS):
-    IS_STUDENT, HAS_KIDS, IS_FREAKY = BOOLEANS
-    self.__DB.CURSOR().execute('''update USER_LIFE_STATES set
-                                    IS_STUDENT = %s,
-                                    HAS_KIDS = %s,
-                                    IS_FREAKY = %s
-                                    where USER_ID = %s''',
-                                    IS_STUDENT, HAS_KIDS, IS_FREAKY, self.__USER_ID)
+  def ModifyUser(self, MODE, *OBJECTS):
+    match MODE:
+      case 'INFO':
+        FIRST_NAME, LAST_NAME, AGE, ADDRESS = OBJECTS
+        self.__DB.CURSOR().execute("update USER_INFOS set FIRST_NAME = %s, LAST_NAME = %s, AGE = %s, ADDRESS = %s where USER_ID = %s", (FIRST_NAME, LAST_NAME or None, AGE or None, ADDRESS or None, self.__USER_ID))
+      case 'NOTES':
+        NOTES = OBJECTS[0]
+        self.__DB.CURSOR().execute(f"update USER_INFOS set NOTES = \"{NOTES}\" where USER_ID = {self.__USER_ID}")
+      case 'MONTH_OF':
+        MONTH_OF = OBJECTS[0]
+        self.__DB.CURSOR().execute(f"update USER_INFOS set MONTH_OF = \"{MONTH_OF}\" where USER_ID = {self.__USER_ID}")
+      case 'USERNAME':
+        USERNAME = OBJECTS[0]
+        if not self.__IsUserAlreadyExists(USERNAME):
+          self.__DB.CURSOR().execute(f"update USERS set USERNAME = '{USERNAME}' where USER_ID = {self.GET_User_ID}")
+      case 'PASSWORD':
+        PASSWORD = OBJECTS[0]
+        self.__DB.CURSOR().execute('update USERS set HASHED_PASSWORD = SHA2(%s, 256) where USER_ID = %s', (PASSWORD, self.__USER_ID))
+        self.__DB.CURSOR().execute('update USER_PASSWORDS set UNHASHED_PASSWORD = %s where USER_ID = %s', (PASSWORD, self.__USER_ID))
+      case 'BANK_INFOS':
+        ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS = OBJECTS 
+        self.__DB.CURSOR().execute(f"update USER_BANK_INFOS set ADD_SAVINGS = {ADD_SAVINGS}, SAVINGS = {SAVINGS}, STIPEND = {STIPEND}, BUDGET_NEEDS = {BUDGET_NEEDS}, BUDGET_WANTS = {BUDGET_WANTS} where USER_ID = {self.__USER_ID}")
+    self.__DB.CONNECTOR().commit()
+
+  # def ModifyLifeStatuses(self, *BOOLEANS):
+  #   IS_STUDENT, HAS_KIDS, IS_FREAKY = BOOLEANS
+  #   self.__DB.CURSOR().execute('''update USER_LIFE_STATES set
+  #                                   IS_STUDENT = %s,
+  #                                   HAS_KIDS = %s,
+  #                                   IS_FREAKY = %s
+  #                                   where USER_ID = %s''',
+  #                                   IS_STUDENT, HAS_KIDS, IS_FREAKY, self.__USER_ID)
 
   def ModifyObjectives(self, MODE, *OBJECT):
     try:
@@ -191,24 +218,6 @@ class DatabaseInteraction:
       print(f'An error occured: {ERR}')
       return 0
 
-  def ModifyUser(self, MODE, *OBJECT):
-    match MODE:
-      case 'INFO':
-        GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS = OBJECT
-        self.__DB.CURSOR().execute('update USER_INFOS set GIVEN_NAME = %s, MIDDLE_INITIAL = %s, LAST_NAME = %s, AGE = %s, ADDRESS = %s where USER_ID = %s', (GIVEN_NAME, MIDDLE_INITIAL, LAST_NAME, AGE, ADDRESS, self.__USER_ID))
-      case 'USERNAME':
-        USERNAME = OBJECT[0]
-        if not self.__IsUserAlreadyExists(USERNAME):
-          self.__DB.CURSOR().execute('update USERS set USERNAME = %s where USER_ID = %s', (USERNAME, self.__USER_ID))
-      case 'PASSWORD':
-        PASSWORD = OBJECT[0]
-        self.__DB.CURSOR().execute('update USERS set HASHED_PASSWORD = SHA2(%s, 256) where USER_ID = %s', (PASSWORD, self.__USER_ID))
-        self.__DB.CURSOR().execute('update USER_PASSWORDS set UNHASHED_PASSWORD = %s where USER_ID = %s', (PASSWORD, self.__USER_ID))
-      case 'BALANCE':
-        BALANCE = OBJECT[0]
-        self.__DB.CURSOR().execute('update USER_INFOS set BALANCE = %s where USER_ID = %s', (BALANCE, self.__USER_ID))
-    self.__DB.CONNECTOR().commit()
-
   def __hashedPassword(self, PASSWORD):
     HASHED_PASSWORD = hashlib.sha256(PASSWORD.encode()).hexdigest()
     return HASHED_PASSWORD
@@ -221,5 +230,5 @@ class DatabaseInteraction:
       return True
     else: return False
 
-  def __InstanceUserLifeStatus(self, USER_ID):
-    self.__DB.CURSOR().execute('insert into USER_LIFE_STATES(USER_ID, IS_STUDENT, HAS_KIDS, IS_FREAKY) values (%s, %s, %s, %s)', (USER_ID, None, None, None))
+  def __InstantiateUserObjects(self, USER_ID):
+    self.__DB.CURSOR().execute('insert into USER_BANK_INFOS(USER_ID, ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS) values (%s, %s, %s, %s, %s, %s)', (USER_ID, None, None, None, None, None))

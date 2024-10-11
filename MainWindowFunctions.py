@@ -3,10 +3,12 @@ import customtkinter as CTK
 import threading
 import time
 from DatabaseFunctions import DatabaseInteraction
+from Home import Home
 
 class MainWindowFunctions:
   def __init__(self, SELF):
     self.MW = SELF
+    self.HOME = Home(self, self.MW)
     self.__DBI = DatabaseInteraction()
 
     self.__LI_Password_Shown = False
@@ -14,6 +16,8 @@ class MainWindowFunctions:
 
     self.__INSTANTIATE_VARIABLES()
     self.SET_Window_LoginDatabase()
+
+    self.HOME.TL_PROTOCOL_Home()
 
   def __INSTANTIATE_VARIABLES(self):
     self.__DB_Host = CTK.StringVar()
@@ -125,6 +129,7 @@ class MainWindowFunctions:
       LOGIN = self.__DBI.LoginUser(USERNAME, PASSWORD)
       if LOGIN == 'LOGINSUCCESS':
         MSGBOX.showinfo('Login Success.', 'Login successful!')
+        self.PROCEED_To_Home()
       if LOGIN == 'LOGINERROR':
         MSGBOX.showerror('Login Failed', 'Wrong username or password.')
     else:
@@ -151,6 +156,7 @@ class MainWindowFunctions:
     else:
       self.SHOW_DatabaseNotConnected()
     # MSGBOX.showinfo('REGISTER', f'{FIRSTNAME}\n{LASTNAME}\n{AGE}\n{ADDRESS}\n{USERNAME}\n{PASSWORD}')
+    self.SETDEFAULT_RegisterFields()
   
   def CMD_BTN_LoginDatabase(self):
     self.BTN_ConnectDB.configure(state='disabled')
@@ -176,3 +182,34 @@ class MainWindowFunctions:
 
   def SHOW_DatabaseNotConnected(self):
     MSGBOX.showerror('Database not Connected.', 'Connection to a database is not established.\nPlease change the credentials by clicking the DB icon.')
+
+  def PROCEED_To_Home(self):
+    self.MW.GET_RootWindowObject().withdraw()
+    self.PRELOAD_User_Details()
+    self.HOME.GET_TL_Root().after(50, lambda: self.HOME.get_fullscreen())
+  
+  def PRELOAD_User_Details(self):
+    FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
+    ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS = self.__DBI.FetchUserAllInfo('BANKS')
+
+    self.HOME.Update_Infos('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
+    self.HOME.Update_Infos('ADDSAVINGS').set(ADD_SAVINGS if ADD_SAVINGS else 0)
+    self.HOME.Update_Infos('SAVINGS').set(SAVINGS if SAVINGS else 0)
+    self.HOME.Update_Infos('STIPEND').set(STIPEND if STIPEND else 0)
+    self.HOME.Update_Infos('MONTHOF').set(MONTH_OF if MONTH_OF else 0)
+    self.HOME.Update_Infos('BUDGETNEEDS').set(BUDGET_NEEDS if BUDGET_NEEDS else 0)
+    self.HOME.Update_Infos('BUDGETWANTS').set(BUDGETS_WANTS if BUDGETS_WANTS else 0)
+    self.HOME.UPDATE_TXB_Notes(NOTES if NOTES else '')
+
+  def UPDATE_UserDetails(self):
+    ADDSAVINGS = self.HOME.Update_Infos('ADDSAVINGS').get()
+    SAVINGS = self.HOME.Update_Infos('SAVINGS').get()
+    STIPEND = self.HOME.Update_Infos('STIPEND').get()
+    MONTH_OF = self.HOME.Update_Infos('MONTHOF').get()
+    BUDGET_NEEDS = self.HOME.Update_Infos('BUDGETNEEDS').get()
+    BUDGET_WANTS = self.HOME.Update_Infos('BUDGETWANTS').get()
+    NOTES = self.HOME.GET_TXB_Notes().get('1.0', 'end-1c')
+
+    self.__DBI.ModifyUser('BANK_INFOS', float(ADDSAVINGS if ADDSAVINGS else 0), float(SAVINGS if SAVINGS else 0), float(STIPEND if STIPEND else 0), float(BUDGET_NEEDS if BUDGET_NEEDS else 0), float(BUDGET_WANTS if BUDGET_WANTS else 0))
+    self.__DBI.ModifyUser('NOTES', NOTES)
+    self.__DBI.ModifyUser('MONTH_OF', MONTH_OF)
