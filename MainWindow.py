@@ -35,12 +35,13 @@ class MainWindow:
 
   def SUBWW_LoginDatabase(self):
     return self.__CTKTL_DatabaseLogin
-  
+
   def __SET_MainWindow(self):
     self.__MainWindow.title('Expense Tracker / Login')
     self.__MainWindow.configure(fg_color='black')
     self.__MainWindow.minsize(self.__GET_MinSizeMainWindow('W', .8), self.__GET_MinSizeMainWindow('H', .8))
     self.__MainWindow.geometry(self.CenterAndSize(self.__MainWindow._min_width, self.__MainWindow._min_height))
+    self.__MainWindow.iconbitmap(self.GET_RELEVANT_PATHDIR('assets/logo.ico'))
 
     "INSTANTIATING CHILD WIDGETS"
     self.__SET_MainFrame()
