@@ -170,12 +170,12 @@ class Home:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_logo(), dark_image = self.__get_name_logo(), size=(50,50))
         
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__name_pht, text = "Name",width = self.__username_button_width(), height = 60, font = ("Poppins",23, "bold"),fg_color ="#2c2c2c", textvariable=self.__PROFILENAME)
-        self.__username_button.place(relx=0.15, rely=0.5, anchor="center")
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__name_pht, text = "Name",width = self.__username_button_width(), height = 60, font = ("Poppins",23, "bold"),fg_color ="#2c2c2c", textvariable=self.__PROFILENAME, corner_radius= 25)
+        self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),
-                     size=(80, 80))
-        self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#2c2c2c", corner_radius=10)
+                     size=(70, 70))
+        self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#696969")
         self.__photoplacement.place(relx= 0.05, rely= 0.5, anchor="center")
 
     def __get_name_logo(self):

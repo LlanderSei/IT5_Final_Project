@@ -73,10 +73,10 @@ class List:
         return self.__get_navigation_header_frame_width(0.35)
     
     def __list_button_width(self):
-        return self.__get_navigation_header_frame_width(0.2)
+        return self.__get_navigation_header_frame_width(0.275)
     
     def __breakdown_button_width(self):
-        return self.__get_navigation_header_frame_width(0.2)
+        return self.__get_navigation_header_frame_width(0.275)
     
     def __get_table_list_width(self):
         return self.__get_mainframe_width(0.8)
@@ -109,13 +109,13 @@ class List:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_logo(), dark_image = self.__get_name_logo(), size=(50,50))
 
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 50, font=("Poppins",20),fg_color="grey")
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="grey", corner_radius= 25)
         self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),
                      size=(70, 70))
         self.__photoplacement = ctk.CTkLabel(self.__get_navigation_header_frame(), image=self.__photo, text="", fg_color="#696969", corner_radius=10)
-        self.__photoplacement.place(relx= 0.1, rely= 0.5, anchor="center")
+        self.__photoplacement.place(relx= 0.05, rely= 0.5, anchor="center")
 
     def __get_name_logo(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/profile2.png')).convert("RGBA")
@@ -123,7 +123,7 @@ class List:
     def __listbutton(self):
         self.__list_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_list_logo(), size=(40,40))
 
-        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__list_pht, text="List",width= self.__list_button_width(), height= 50, font=("Poppins",20), fg_color="#2c2c2c")
+        self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__list_pht, text="List",width= self.__list_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", corner_radius = 25)
         self.__list_button.place(relx=0.6, rely=0.5, anchor="center")
 
     def __get_list_logo(self):
@@ -132,7 +132,7 @@ class List:
     def __breakdownbutton(self):
         self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_logo(), dark_image = self.__get_breakdown_logo(), size=(40,40))
 
-        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="breakdown",width= self.__breakdown_button_width(), height= 50, font=("Poppins",20), fg_color="grey")
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
         self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __get_breakdown_logo(self):
