@@ -3,16 +3,29 @@ from PIL import Image
 from tkinter import ttk
 import os
 class List:
-    def __init__(self, parent):
+    def __init__(self, parent, SP_MWF):
         self.__parent = parent
+        self.__MWF = SP_MWF
         self.__root = ctk.CTkToplevel(self.__parent.GET_TL_Root())
         self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_List)
         self.__root.withdraw()
+        self.__INITIATE_VARIABLES()
         self.Main_Window()
+
+    def __INITIATE_VARIABLES(self):
+        self.__PROFILENAME = ctk.StringVar()
+        self.__LIST_NEEDS = []
+        self.__LIST_WANTS = []
+
+    def TL_LIST_Return_Variables(self, OBJECT):
+        match OBJECT:
+            case 'PROFILENAME': return self.__PROFILENAME
+            case 'LISTNEEDS': return self.__LIST_NEEDS
+            case 'LISTWANTS': return self.__LIST_WANTS
 
     def TL_List_Show(self):
         self.__root.deiconify()
-        self.__root.after(50, self.__root.state('zoomed'))
+        self.__root.after(50, lambda: self.__root.state('zoomed'))
 
     def TL_PROTOCOL_List(self):
         self.__root.withdraw()
@@ -109,7 +122,7 @@ class List:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_logo(), dark_image = self.__get_name_logo(), size=(50,50))
 
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="grey", corner_radius= 25)
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="grey", corner_radius= 25, textvariable=self.__PROFILENAME)
         self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),

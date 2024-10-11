@@ -4,11 +4,15 @@ import threading
 import time
 from DatabaseFunctions import DatabaseInteraction
 from Home import Home
+# from List import List
+# from Breakdown import Breakdown
 
 class MainWindowFunctions:
-  def __init__(self, SELF):
-    self.MW = SELF
+  def __init__(self, MAINWINDOW):
+    self.MW = MAINWINDOW
     self.HOME = Home(self, self.MW)
+    # self.LIST = List(self, self.HOME)
+    # self.BREAKDOWN = Breakdown(self, self.HOME, self.LIST)
     self.__DBI = DatabaseInteraction()
 
     self.__LI_Password_Shown = False
@@ -186,6 +190,7 @@ class MainWindowFunctions:
   def PROCEED_To_Home(self):
     self.MW.GET_RootWindowObject().withdraw()
     self.PRELOAD_User_Details()
+    self.PRELOAD_List_Details()
     self.HOME.GET_TL_Root().after(50, lambda: self.HOME.get_fullscreen())
   
   def PRELOAD_User_Details(self):
@@ -201,6 +206,11 @@ class MainWindowFunctions:
     self.HOME.Update_Infos('BUDGETWANTS').set(BUDGETS_WANTS if BUDGETS_WANTS else 0)
     self.HOME.UPDATE_TXB_Notes(NOTES if NOTES else '')
 
+  def PRELOAD_List_Details(self):
+    FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
+
+    self.HOME.TL_LIST_Return_Variables('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
+
   def UPDATE_UserDetails(self):
     ADDSAVINGS = self.HOME.Update_Infos('ADDSAVINGS').get()
     SAVINGS = self.HOME.Update_Infos('SAVINGS').get()
@@ -213,3 +223,14 @@ class MainWindowFunctions:
     self.__DBI.ModifyUser('BANK_INFOS', float(ADDSAVINGS if ADDSAVINGS else 0), float(SAVINGS if SAVINGS else 0), float(STIPEND if STIPEND else 0), float(BUDGET_NEEDS if BUDGET_NEEDS else 0), float(BUDGET_WANTS if BUDGET_WANTS else 0))
     self.__DBI.ModifyUser('NOTES', NOTES)
     self.__DBI.ModifyUser('MONTH_OF', MONTH_OF)
+
+  def ADD_List(self, CATEGORY, *OBJECTS):
+    match CATEGORY.upper():
+      case 'NEEDS':
+        RESULT = self.__DBI.ModifyNeededObjectives('ADD', OBJECTS[0], OBJECTS[1])
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS[0]}" in Needs already existed.', parent=self.HOME.GET_TL_Root()); return 0
+      case 'WANTS':
+        RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
+        if RESULT == 'NAME_WANTEDOBJ_DUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS[0]}" in Wants already existed.', parent=self.HOME.GET_TL_Root()); return 0
+    return 'ADDSUCCESS'
+    

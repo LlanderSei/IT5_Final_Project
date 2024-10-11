@@ -4,21 +4,29 @@ from PIL import Image
 import os
 from List import List
 from Breakdown import Breakdown
+from tkinter import messagebox as MSGBOX
 
 class Home:
-    def __init__(self, SUB, MAIN):
+    def __init__(self, SUBPARENT, MAIN):
         self.__PT = MAIN
-        self.__SP = SUB
+        self.__SP = SUBPARENT
+
         self.__root = ctk.CTkToplevel(self.__PT.GET_RootWindowObject())
         self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_Home)
-        self.__List = List(self)
-        self.__Breakdown = Breakdown(self)
+        self.__root.withdraw()
+
+        self.__List = List(self, self.__SP)
+        self.__Breakdown = Breakdown(self, self.__SP)
+        
+        
         self.__INITIATE_OBJECTS()
         self.Main_Window()
         # self.__root.mainloop()
 
     def TL_PROTOCOL_Home(self):
         self.__root.withdraw()
+        self.__List.GET_TL_RootList().withdraw()
+        self.__Breakdown.TL_Get_Root_Breakdown().withdraw()
         self.__PT.GET_RootWindowObject().deiconify()
     
     def GET_TL_Root(self):
@@ -33,6 +41,10 @@ class Home:
         self.__BUDGET_NEEDS = ctk.StringVar()
         self.__BUDGET_WANTS = ctk.StringVar()
         self.__NOTES = ctk.StringVar()
+
+        self.__EXPCATEGORY = ctk.StringVar(value= 'Needs')
+        self.__EXPENDITURES = ctk.StringVar()
+        self.__EXPAMOUNT = ctk.StringVar()
 
         self.__root.bind('<KeyPress>', self.ROOT_EVT_KeyPressed)
 
@@ -50,11 +62,21 @@ class Home:
     def ROOT_EVT_KeyPressed(self, EVT):
         self.__SP.UPDATE_UserDetails()
 
+    def ADD_Objectives(self):
+        if not self.__EXPENDITURES.get(): MSGBOX.showerror('ERROR', 'Expenditures cannot be empty!', parent=self.__root); return 0
+        if not self.__EXPAMOUNT.get(): MSGBOX.showerror('ERROR', 'Amount cannot be empty!', parent=self.__root); return 0
+
+        RESULT = self.__SP.ADD_List(self.__EXPCATEGORY.get(), self.__EXPENDITURES.get(), float(self.__EXPAMOUNT.get()))
+        if RESULT == 'ADDSUCCESS': MSGBOX.showinfo('Item Added', 'Item successfully added.')
+
     def VMCD_Entry_OnlyFloat(self, VALUE):
         if VALUE == '': return True
         if VALUE.replace('.', '', 1).isdigit() and VALUE.count('.') <= 1: return True
         return False
-        ...
+
+    def TL_LIST_Return_Variables(self, OBJECT):
+        return self.__List.TL_LIST_Return_Variables(OBJECT)
+
     def __get_main_window_width(self):
         return self.__get_frame_width(0.8)
     
@@ -233,7 +255,7 @@ class Home:
     def __add(self):
         self.__add_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_add_logo(), size=(30,30))
         
-        self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__add_pht,text="Add", corner_radius = 25 ,width = 370 , height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
+        self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__add_pht,text="Add", corner_radius = 25 ,width = 370 , height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.ADD_Objectives())
         self.__add_button.place(relx = 0.158, rely = 0.26, anchor = "w")
 
     def __get_add_logo(self):
@@ -337,21 +359,20 @@ class Home:
         self.__input = ctk.CTkFrame(self.__get_main_frame(), width=self.__inputs_width(), height= self.__inputs_height(), fg_color="#696969")
         self.__input.place(relx = 0.770, rely = 0.35 ,anchor="center")
         
-        noteDropdown_var = ctk.StringVar(value = "Needs")
         
-        dropdown = ctk.CTkComboBox(self.__input, variable = noteDropdown_var, values = ["Needs", "Wants"], font = ("Poppins", 30), width = 300, height = 50, state = "readonly")
+        dropdown = ctk.CTkComboBox(self.__input, variable = self.__EXPCATEGORY, values = ["Needs", "Wants"], font = ("Poppins", 30), width = 300, height = 50, state = "readonly")
         dropdown.place( relx = 0.2, rely = 0.2, anchor = "w")
         
         self.__label_expenditures = ctk.CTkLabel(self.__input, text= "Expenditures:", font = ("Poppins", 25), width = 150, height = 30, text_color = "white")
         self.__label_expenditures.place( relx = 0.05, rely = 0.5, anchor = "w") 
         
-        self.__entry_expenditures = ctk.CTkEntry(self.__input, width = 250, height = 50, font = ("Poppins", 20), fg_color = "gray")
+        self.__entry_expenditures = ctk.CTkEntry(self.__input, width = 250, height = 50, font = ("Poppins", 20), fg_color = "gray", textvariable=self.__EXPENDITURES)
         self.__entry_expenditures.place( relx = 0.38, rely = 0.5, anchor = "w")
         
         self.__label_inputAmount = ctk.CTkLabel(self.__input, text= "Amount:", font = ("Poppins", 25), width = 150, height = 30, text_color= "white")
         self.__label_inputAmount.place( relx = 0.115, rely = 0.7, anchor = "w") 
         
-        self.__entry_inputAmmount = ctk.CTkEntry(self.__input, width = 250, height = 50, font = ("Poppins", 20), fg_color = "gray", validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
+        self.__entry_inputAmmount = ctk.CTkEntry(self.__input, width = 250, height = 50, font = ("Poppins", 20), fg_color = "gray", validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'), textvariable=self.__EXPAMOUNT)
         self.__entry_inputAmmount.place( relx = 0.38, rely = 0.7, anchor = "w")
         
     def GET_RELEVANT_PATHDIR(self, IMAGENAME):

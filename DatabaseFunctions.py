@@ -23,7 +23,7 @@ class CreateDatabase:
   
   def LOGINDATABASE(self, HOST, USER, PASSWORD):
     try:
-      self.__MYSQLConnection = mysql.connector.connect(host = f'{HOST}', user = f'{USER}', password =f'{PASSWORD or ''}')
+      self.__MYSQLConnection = mysql.connector.connect(host = f'{HOST}', user = f'{USER}', password =f'{PASSWORD or ""}')
       self.__MYSQLCursor = self.__MYSQLConnection.cursor()
       self.buildDatabase()
       return 'SUCCESSFUL'
@@ -78,15 +78,22 @@ class CreateDatabase:
                                 BUDGET_NEEDS float(50,2),
                                 BUDGET_WANTS float(50,2));''')
     
-    # CREATES TABLE WITH COLUMNS FOR USER'S NEEDS AND WANTS, ETC.
-    self.CURSOR().execute('''create table if not exists USER_LIFE_OBJECTIVES(
+    # CREATES TABLE WITH COLUMNS FOR USER'S NEEDS AND WANTS.
+    self.CURSOR().execute('''create table if not exists USER_NEEDED_OBJECTIVES(
                                 OBJECTIVE_ID integer not null auto_increment primary key,
                                 USER_ID integer,
                                 foreign key (USER_ID) references USERS(USER_ID)
                                   on delete cascade on update restrict,
-                                OBJECTIVE varchar(255) not null unique,
-                                CATEGORY varchar(50) not null,
-                                COST float(20,2) not null );''')
+                                OBJ_NAME varchar(255) not null,
+                                AMOUNT float(20,2) not null );''')
+    
+    self.CURSOR().execute('''create table if not exists USER_WANTED_OBJECTIVES(
+                                OBJECTIVE_ID integer not null auto_increment primary key,
+                                USER_ID integer,
+                                foreign key (USER_ID) references USERS(USER_ID)
+                                  on delete cascade on update restrict,
+                                OBJ_NAME varchar(255) not null,
+                                AMOUNT float(20,2) not null );''')
     
     # ONLY FOR STORING UNHASHED PASSWORD PURPOSES, SINCE HASHED PASSWORDS ARE IRREVERSIBLE
     self.CURSOR().execute('''create table if not exists USER_PASSWORDS(
@@ -159,10 +166,14 @@ class DatabaseInteraction:
         self.__DB.CURSOR().execute(f"select ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS from USER_BANK_INFOS where USER_ID = '{self.__USER_ID}'")
         ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS = self.__DB.CURSOR().fetchone()
         return ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS
-      case 'OBJECTIVES':
-        self.__DB.CURSOR().execute(f"select OBJECTIVE, CATEGORY, COST from USER_LIFE_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
-        OBJECTIVELIST = self.__DB.CURSOR().fetchall()
-        return OBJECTIVELIST
+      case 'NEEDED_OBJECTIVES':
+        self.__DB.CURSOR().execute(f"select OBJECTIVE_ID, OBJ_NAME, AMOUNT from USER_NEEDED_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
+        OBJECTIVENEEDEDLIST = self.__DB.CURSOR().fetchall()
+        return OBJECTIVENEEDEDLIST
+      case 'WANTED_OBJECTIVES':
+        self.__DB.CURSOR().execute(f"select OBJECTIVE_ID, OBJ_NAME, AMOUNT from USER_WANTED_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
+        OBJECTIVEWANTEDLIST = self.__DB.CURSOR().fetchall()
+        return OBJECTIVEWANTEDLIST        
 
   def ModifyUser(self, MODE, *OBJECTS):
     match MODE:
@@ -197,26 +208,81 @@ class DatabaseInteraction:
   #                                   where USER_ID = %s''',
   #                                   IS_STUDENT, HAS_KIDS, IS_FREAKY, self.__USER_ID)
 
-  def ModifyObjectives(self, MODE, *OBJECT):
+  def ModifyNeededObjectives(self, MODE, *OBJECTS):
     try:
       match MODE:
-        case 'ADD': # [0] OBJECTIVE, [1] CATEGORY, [2] COTS in OBJECT
-          self.__DB.CURSOR().execute('''insert into USER_LIFE_OBJECTIVES(USER_ID, OBJECTIVE, CATEGORY, COST)
-                                          values (%s, %s, %s, %s)''', (self.__USER_ID, OBJECT[0], OBJECT[1], OBJECT[2]))
-        case 'UPDATE': # [0] OBJECTIVE, [1] CATEGORY, [2] COTS in OBJECT
-          self.__DB.CURSOR().execute('''update USER_ITEM_OBJECTIVES set
-                                          OBJECTIVE = %s,
-                                          CATEGORY = %s,
-                                          COST = %s
-                                          where USER_ID = %s''',
-                                          (OBJECT[0], OBJECT[1], OBJECT[2], self.__USER_ID))
-        case 'DELETE': # [0] OBJECTIVE
-          self.__DB.CURSOR().execute('delete from USER_ITEM_OBJECTIVES where OBJECTIVE = %s and USER_ID = %s', (OBJECT[0], self.__USER_ID))
+        case 'ADD':
+          if not self.__IsObjNameAlrExists_InNeeds(OBJECTS[0]):
+            self.__DB.CURSOR().execute(f"""insert into USER_NEEDED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
+          else: return 'NAME_NEEDEDOBJ_DUPE'
+
+        case 'UPDATE':
+          if OBJECTS[1] != self.__RetObjective_InNeeds(OBJECTS[0], 'OBJ_NAME'):
+            if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
+              return 'NAME_NEEDEDOBJ_DUPE'
+          self.__DB.CURSOR().execute(f"""update USER_NEEDED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID})""")
+
+        case 'DELETE':
+          if self.__RetObjective_InNeeds(OBJECTS[0]):
+            self.__DB.CURSOR().execute(f"""delete from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {OBJECTS[0]}""")
+            
       self.__DB.CONNECTOR().commit()
       return 'SUCCESS'
     except mysql.connector.Error as ERR:
-      print(f'An error occured: {ERR}')
+      print(f'{ERR}')
       return 0
+
+  def __IsObjNameAlrExists_InNeeds(self, OBJNAME):
+    self.__DB.CURSOR().execute(f"select * from USER_NEEDED_OBJECTIVES where USER_ID = {self.__USER_ID} and OBJ_NAME = '{OBJNAME}'")
+    return self.__DB.CURSOR().fetchone()
+  
+  def __RetObjective_InNeeds(self, ID, RETVALUE):
+    self.__DB.CURSOR().execute(f"""select * from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {ID}""")
+    OBJ_ID, USERID, OBJ_NAME, AMOUNT = self.__DB.CURSOR().fetchone()
+
+    match RETVALUE:
+      case 'OBJ_ID': return OBJ_ID
+      case 'USERID': return USERID
+      case 'OBJ_NAME': return OBJ_NAME
+      case 'AMOUNT': return AMOUNT
+  
+  def ModifyWantedObjectives(self, MODE, *OBJECTS):
+    try:
+      match MODE:
+        case 'ADD':
+          if not self.__IsObjNameAlrExists_InWants(OBJECTS[0]):
+            self.__DB.CURSOR().execute(f"""insert into USER_WANTED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
+          else: return 'NAME_WANTEDOBJ_DUPE'
+
+        case 'UPDATE':
+          if OBJECTS[1] != self.__RetObjective_InWants(OBJECTS[0], 'OBJ_NAME'):
+            if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
+              return 'NAME_WANTEDOBJ_DUPE'
+          self.__DB.CURSOR().execute(f"""update USER_WANTED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID})""")
+
+        case 'DELETE':
+          if self.__RetObjective_InNeeds(OBJECTS[0]):
+            self.__DB.CURSOR().execute(f"""delete from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {OBJECTS[0]}""")
+            
+      self.__DB.CONNECTOR().commit()
+      return 'SUCCESS'
+    except mysql.connector.Error as ERR:
+      print(f'{ERR}')
+      return 0
+
+  def __IsObjNameAlrExists_InWants(self, OBJNAME):
+    self.__DB.CURSOR().execute(f"select * from USER_WANTED_OBJECTIVES where USER_ID = {self.__USER_ID} and OBJ_NAME = '{OBJNAME}'")
+    return self.__DB.CURSOR().fetchone()
+  
+  def __RetObjective_InWants(self, ID, RETVALUE):
+    self.__DB.CURSOR().execute(f"""select * from USER_WANTED_OBJECTIVES where OBJECTIVE_ID = {ID}""")
+    OBJ_ID, USERID, OBJ_NAME, AMOUNT = self.__DB.CURSOR().fetchone()
+
+    match RETVALUE:
+      case 'OBJ_ID': return OBJ_ID
+      case 'USERID': return USERID
+      case 'OBJ_NAME': return OBJ_NAME
+      case 'AMOUNT': return AMOUNT
 
   def __hashedPassword(self, PASSWORD):
     HASHED_PASSWORD = hashlib.sha256(PASSWORD.encode()).hexdigest()

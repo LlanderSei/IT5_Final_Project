@@ -4,8 +4,9 @@ from tkinter import ttk
 from PIL import Image
 import os
 class Breakdown:
-    def __init__(self, parent):
+    def __init__(self, parent, SP_MWF):
         self.__parent = parent
+        self.SPMWF = SP_MWF
         self.__root = ctk.CTkToplevel(self.__parent.GET_TL_Root())
         self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_Breakdown)
         self.__root.withdraw()
@@ -13,7 +14,7 @@ class Breakdown:
 
     def TL_Breakdown_Show(self):
         self.__root.deiconify()
-        self.__root.after(50, self.__root.state('zoomed'))
+        self.__root.after(50, lambda: self.__root.state('zoomed'))
 
     def TL_PROTOCOL_Breakdown(self):
         self.__root.withdraw()
