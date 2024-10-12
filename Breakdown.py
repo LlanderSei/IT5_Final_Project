@@ -138,7 +138,7 @@ class Breakdown:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_logo(), dark_image = self.__get_name_logo(), size=(50,50))
 
-        self.__username_button = ctk.CTkButton(self.__get_navigation_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="grey", corner_radius= 25)
+        self.__username_button = ctk.CTkButton(self.__get_navigation_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="#2c2c2c", corner_radius= 25)
         self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),
@@ -161,7 +161,7 @@ class Breakdown:
     def __breakdownbutton(self):
         self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_logo(), dark_image = self.__get_breakdown_logo(), size=(40,40))
 
-        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_frame(), image = self.__breakdown_pht, text="breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_frame(), image = self.__breakdown_pht, text="Breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
         self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __get_breakdown_logo(self):
@@ -246,4 +246,7 @@ class Breakdown:
     def GET_RELEVANT_PATHDIR(self, IMAGENAME):
       path = os.path.dirname(os.path.abspath(__file__))
       return os.path.join(path, IMAGENAME)
+  
+    def __pass(self):
+        pass
 # window = Breakdown()

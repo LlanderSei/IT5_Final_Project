@@ -124,7 +124,7 @@ class List:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_icon(), dark_image = self.__get_name_icon(), size=(50,50))
 
-        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="grey", corner_radius= 25, textvariable=self.__PROFILENAME)
+        self.__username_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="#2c2c2c", corner_radius= 25, textvariable=self.__PROFILENAME)
         self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_icon(),
                      dark_image= self.__get_image_icon(),
@@ -147,7 +147,7 @@ class List:
     def __breakdownbutton(self):
         self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_icon(), dark_image = self.__get_breakdown_icon(), size=(40,40))
 
-        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
+        self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="Breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
         self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
     def __get_breakdown_icon(self):
@@ -155,18 +155,19 @@ class List:
     
     
     def __footer_navigation_frame(self):
-        self.__footer_navigation = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="blue")
+        self.__footer_navigation = ctk.CTkFrame(self.__get_main_frame(), width=self.__navigation_width(), height= self.__navigation_height(), fg_color="#696969")
         self.__footer_navigation.place(relx = 0.5, rely = 0.85, anchor="n")
         
         self.__update()
         self.__delete()
         self.__category_entry_box()
+        self.__objective_entry_box()
         
     def __get_footer_navigation_frame(self):
         return self.__footer_navigation
     
     def __update(self):
-        self.__update_pht = ctk.CTkImage(light_image = self.__get_delete_icon(), dark_image = self.__get_update_icon(), size=(30,30))
+        self.__update_pht = ctk.CTkImage(light_image = self.__get_delete_icon(), dark_image = self.__get_update_icon(), size=(40,40))
         
         self.__update_button = ctk.CTkButton (self.__get_footer_navigation_frame(), image = self.__update_pht, text="Update",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
         self.__update_button.place(relx=0.6, rely=0.5, anchor="center")
@@ -185,24 +186,43 @@ class List:
     
     def __category_entry_box(self):
         
-        self.placeholder = "Category"
+        self.placeholder_cat = "Category"
         
-        self.__entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "yellow")
-        self.__entry_box.insert(0, self.placeholder)
-        self.__entry_box.bind("<FocusIn>", self.__onclick)
-        self.__entry_box.bind("<FocusOut>", self.__on_focusout)
-        self.__entry_box.place( relx= 0.05, rely= 0.5, anchor="center" )
+        self.__catg_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify="center")
+        self.__catg_entry_box.insert(0, self.placeholder_cat)
+        self.__catg_entry_box.bind("<Button-1>", self.__onclick_category)
+        self.__catg_entry_box.bind("<FocusOut>", self.__on_focusout_category)
+        self.__catg_entry_box.place( relx= 0.13, rely= 0.5, anchor="center" )
     
-    def __onclick(self, event):
-        if self.__entry_box.get() == self.placeholder:
-            self.__entry_box.delete(0, ctk.END)  # Clear the entry
-            self.__entry_box.config(fg='black')  # C
+    def __onclick_category(self, event):
+        if self.__catg_entry_box.get() == self.placeholder_cat:
+            self.__catg_entry_box.delete(0, ctk.END)  
+            self.__catg_entry_box.config(fg='black') 
     
-    def __on_focusout(self, event):
-        if self.__entry_box.get() == '':
-            self.__entry_box.insert(0, self.placeholder)  # Insert the placeholder text
-            self.__entry_box.config(fg='gray')  # Change text color to gray
+    def __on_focusout_category(self, event):
+        if self.__catg_entry_box.get() == '':
+            self.__catg_entry_box.insert(0, self.placeholder_cat)  
+            self.__catg_entry_box.config(fg='gray')  
     
+    def __objective_entry_box(self):
+        
+        self.placeholder_obj = "Objective Name"
+        
+        self.__obj_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify = "center")
+        self.__obj_entry_box.insert(0, self.placeholder_obj)
+        self.__obj_entry_box.bind("<Button-1>", self.__onclick_objective)
+        self.__obj_entry_box.bind("<FocusOut>", self.__on_focusout_objective)
+        self.__obj_entry_box.place( relx= 0.35, rely= 0.5, anchor="center" )
+    
+    def __onclick_objective(self, event):
+        if self.__obj_entry_box.get() == self.placeholder_obj:
+            self.__obj_entry_box.delete(0, ctk.END)  
+            self.__obj_entry_box.config(fg='black')  
+    
+    def __on_focusout_objective(self, event):
+        if self.__obj_entry_box.get() == '':
+            self.__obj_entry_box.insert(0, self.placeholder_obj)  
+            self.__obj_entry_box.config(fg='gray')  
     
     def __table_list_frame(self):
         self.__table_list = ctk.CTkFrame(self.__get_main_frame(), width=self.__get_table_list_width(), height= self.__get_table_list_height(), fg_color="#696969")
