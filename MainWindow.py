@@ -84,21 +84,21 @@ class MainWindow:
     CTK.CTkLabel(self.__Login_LeftFrame, text="LOGIN", fg_color=self.COLOR('DIMGRAY'), text_color="white", font=('Poppins Bold', 50)).place(relx= 0.525, y=120, anchor="n")
 
     "/ USERNAME"
-    CTK.CTkLabel(self.__Login_LeftFrame, text='Username:', font=('Poppins', 20), text_color='white').place(relx=.5, x=-115, y=190, anchor='n')
-    CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=50, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.COLOR('VERYDARKGRAY'), border_color=self.COLOR('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_USERNAME).place(relx= .5, y=220, anchor='n')
+    CTK.CTkLabel(self.__Login_LeftFrame, text='Username:', font=('Poppins', 25), text_color='white').place(relx=.5, x=-115, y=190, anchor='n')
+    CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=70, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.COLOR('VERYDARKGRAY'), border_color=self.COLOR('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_USERNAME).place(relx= .5, y=220, anchor='n')
 
     "/ PASSWORD"
-    CTK.CTkLabel(self.__Login_LeftFrame, text='Password:', font=('Poppins', 20), text_color='white').place(relx=.5, x=-115, y=300, anchor='n')
-    self.__ENTRY_LI_Password = CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=50, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.COLOR('VERYDARKGRAY'), border_color=self.COLOR('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_PASSWORD, show='*')
+    CTK.CTkLabel(self.__Login_LeftFrame, text='Password:', font=('Poppins', 25), text_color='white').place(relx=.5, x=-115, y=300, anchor='n')
+    self.__ENTRY_LI_Password = CTK.CTkEntry(self.__Login_LeftFrame, width=350, height=70, font=('Poppins', 20), text_color='white', corner_radius=35, fg_color=self.COLOR('VERYDARKGRAY'), border_color=self.COLOR('VERYDARKGRAY'), border_width=5, textvariable=self.__LI_PASSWORD, show='*')
     self.__ENTRY_LI_Password.place(relx= .5, y=330, anchor='n')
     self.__BTN_LI_Password = CTK.CTkButton(self.__Login_LeftFrame, image=self.CTKIMAGE('show_eye', (40,20)), text='', fg_color=self.COLOR('VERYDARKGRAY'), width=10, border_width=2, border_color=self.COLOR('VERYDARKGRAY'), corner_radius=10, command=lambda: self.MWF.FUNC_BTN_LI_Password())
-    self.__BTN_LI_Password.place(relx= 0.5, y = 340, anchor= "n", x = 220)
+    self.__BTN_LI_Password.place(relx= 0.5, y = 350, anchor= "n", x = 220)
 
     "/ LOGIN BUTTON"
-    CTK.CTkButton(self.__Login_LeftFrame, text='Log-In', width=200, height=50, font=('Poppins', 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color= "#e1e1e1", corner_radius= 50, command=lambda:self.MWF.BUTTON_Login()).place(relx= 0.5, y = 420, anchor= "n")
+    CTK.CTkButton(self.__Login_LeftFrame, text='Log-In', width=350, height=70, font=('Poppins', 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color= "#e1e1e1", corner_radius= 50, command=lambda:self.MWF.BUTTON_Login()).place(relx= 0.5, y = 450, anchor= "n")
 
     "/ SIGNUP BUTTON"
-    CTK.CTkButton(self.__Login_LeftFrame, text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius= 50, command=lambda: self.MWF.SWITCH_RegisterFrame()).place(relx= 0.5, y = 500, anchor= "n")
+    CTK.CTkButton(self.__Login_LeftFrame, text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius= 50, command=lambda: self.MWF.SWITCH_RegisterFrame()).place(relx= 0.5, y = 530, anchor= "n")
 
   def __SET_LeftFrame_Register(self):
     "LEFT FRAME REGISTER"
