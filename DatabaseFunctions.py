@@ -220,10 +220,10 @@ class DatabaseInteraction:
           if OBJECTS[1] != self.__RetObjective_InNeeds(OBJECTS[0], 'OBJ_NAME'):
             if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
               return 'NAME_NEEDEDOBJ_DUPE'
-          self.__DB.CURSOR().execute(f"""update USER_NEEDED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID})""")
+          self.__DB.CURSOR().execute(f"""update USER_NEEDED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID}""")
 
         case 'DELETE':
-          if self.__RetObjective_InNeeds(OBJECTS[0]):
+          if self.__RetObjective_InNeeds(OBJECTS[0], 'OBJ_ID'):
             self.__DB.CURSOR().execute(f"""delete from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {OBJECTS[0]}""")
             
       self.__DB.CONNECTOR().commit()
@@ -238,8 +238,10 @@ class DatabaseInteraction:
   
   def __RetObjective_InNeeds(self, ID, RETVALUE):
     self.__DB.CURSOR().execute(f"""select * from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {ID}""")
-    OBJ_ID, USERID, OBJ_NAME, AMOUNT = self.__DB.CURSOR().fetchone()
-
+    FETCHED = self.__DB.CURSOR().fetchone()
+    if FETCHED:
+      OBJ_ID, USERID, OBJ_NAME, AMOUNT = FETCHED
+    
     match RETVALUE:
       case 'OBJ_ID': return OBJ_ID
       case 'USERID': return USERID
@@ -258,11 +260,11 @@ class DatabaseInteraction:
           if OBJECTS[1] != self.__RetObjective_InWants(OBJECTS[0], 'OBJ_NAME'):
             if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
               return 'NAME_WANTEDOBJ_DUPE'
-          self.__DB.CURSOR().execute(f"""update USER_WANTED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID})""")
+          self.__DB.CURSOR().execute(f"""update USER_WANTED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID}""")
 
         case 'DELETE':
-          if self.__RetObjective_InNeeds(OBJECTS[0]):
-            self.__DB.CURSOR().execute(f"""delete from USER_NEEDED_OBJECTIVES where OBJECTIVE_ID = {OBJECTS[0]}""")
+          if self.__RetObjective_InWants(OBJECTS[0], 'OBJ_ID'):
+            self.__DB.CURSOR().execute(f"""delete from USER_WANTED_OBJECTIVES where OBJECTIVE_ID = {OBJECTS[0]}""")
             
       self.__DB.CONNECTOR().commit()
       return 'SUCCESS'
@@ -276,7 +278,9 @@ class DatabaseInteraction:
   
   def __RetObjective_InWants(self, ID, RETVALUE):
     self.__DB.CURSOR().execute(f"""select * from USER_WANTED_OBJECTIVES where OBJECTIVE_ID = {ID}""")
-    OBJ_ID, USERID, OBJ_NAME, AMOUNT = self.__DB.CURSOR().fetchone()
+    FETCHED = self.__DB.CURSOR().fetchone()
+    if FETCHED:
+      OBJ_ID, USERID, OBJ_NAME, AMOUNT = FETCHED
 
     match RETVALUE:
       case 'OBJ_ID': return OBJ_ID

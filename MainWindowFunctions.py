@@ -212,6 +212,7 @@ class MainWindowFunctions:
     ALL_WANTS_LIST = self.__DBI.FetchUserAllInfo('WANTED_OBJECTIVES')
 
     self.HOME.TL_LIST_Return_Variables('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
+    self.HOME.DEL_ALL_TABLES_LIST()
     self.HOME.HOME_LIST_ModifyTables('NEEDS', ALL_NEEDS_LIST)
     self.HOME.HOME_LIST_ModifyTables('WANTS', ALL_WANTS_LIST)
 
@@ -232,9 +233,35 @@ class MainWindowFunctions:
     match CATEGORY.upper():
       case 'NEEDS':
         RESULT = self.__DBI.ModifyNeededObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS[0]}" in Needs already existed.', parent=self.HOME.GET_TL_Root()); return 0
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS)
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_WANTEDOBJ_DUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS[0]}" in Wants already existed.', parent=self.HOME.GET_TL_Root()); return 0
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS)
     return 'ADDSUCCESS'
     
+  def UPDATE_List(self, CATEGORY, *OBJECTS):
+    "*OBJECTS >> 0: ID, 1: NAME, 2: AMOUNT"
+    match CATEGORY.upper():
+      case 'NEEDS':
+        RESULT = self.__DBI.ModifyNeededObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS[1]); return 0
+      case 'WANTS':
+        RESULT = self.__DBI.ModifyWantedObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS[1]); return 0
+    self.PRELOAD_List_Details()
+    return 'SUCCESS'
+
+  def DELETE_ITEM_List(self, CATEGORY, ID):
+    match CATEGORY.upper():
+      case 'NEEDS':
+        RESULT = self.__DBI.ModifyNeededObjectives('DELETE', int(ID))
+      case 'WANTS':
+        RESULT = self.__DBI.ModifyWantedObjectives('DELETE', int(ID))
+    MSGBOX.showinfo('Success deletion.', 'The item has been deleted.')
+    self.PRELOAD_List_Details()
+    return 'SUCCESS'
+
+  def SHOW_MSGBOX_NOTIF(self, ALERTTYPE, OBJECTS):
+    match ALERTTYPE:
+      case 'NEEDS_NAMEDUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS}" in Needs already existed.', parent=self.HOME.GET_TL_Root())
+      case 'WANTS_NAMEDUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS}" in Wants already existed.', parent=self.HOME.GET_TL_Root())
