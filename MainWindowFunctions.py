@@ -208,8 +208,12 @@ class MainWindowFunctions:
 
   def PRELOAD_List_Details(self):
     FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
+    ALL_NEEDS_LIST = self.__DBI.FetchUserAllInfo('NEEDED_OBJECTIVES')
+    ALL_WANTS_LIST = self.__DBI.FetchUserAllInfo('WANTED_OBJECTIVES')
 
     self.HOME.TL_LIST_Return_Variables('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
+    self.HOME.HOME_LIST_ModifyTables('NEEDS', ALL_NEEDS_LIST)
+    self.HOME.HOME_LIST_ModifyTables('WANTS', ALL_WANTS_LIST)
 
   def UPDATE_UserDetails(self):
     ADDSAVINGS = self.HOME.Update_Infos('ADDSAVINGS').get()

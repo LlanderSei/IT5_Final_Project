@@ -5,6 +5,7 @@ import os
 from List import List
 from Breakdown import Breakdown
 from tkinter import messagebox as MSGBOX
+from tktooltip import ToolTip as Tktp
 
 class Home:
     def __init__(self, SUBPARENT, MAIN):
@@ -20,6 +21,7 @@ class Home:
         
         
         self.__INITIATE_OBJECTS()
+        # self.VALIDATION_COMMAND_List()
         self.Main_Window()
         # self.__root.mainloop()
 
@@ -34,17 +36,17 @@ class Home:
     
     def __INITIATE_OBJECTS(self):
         self.__PROFILENAME = ctk.StringVar()
-        self.__ADD_SAVINGS = ctk.StringVar()
-        self.__SAVINGS = ctk.StringVar()
-        self.__STIPEND = ctk.StringVar()
+        self.__ADD_SAVINGS = ctk.DoubleVar(value=0)
+        self.__SAVINGS = ctk.DoubleVar(value=0)
+        self.__STIPEND = ctk.DoubleVar(value=0)
         self.__MONTH_OF = ctk.StringVar()
-        self.__BUDGET_NEEDS = ctk.StringVar()
-        self.__BUDGET_WANTS = ctk.StringVar()
+        self.__BUDGET_NEEDS = ctk.DoubleVar(value=0)
+        self.__BUDGET_WANTS = ctk.DoubleVar(value=0)
         self.__NOTES = ctk.StringVar()
 
         self.__EXPCATEGORY = ctk.StringVar(value= 'Needs')
         self.__EXPENDITURES = ctk.StringVar()
-        self.__EXPAMOUNT = ctk.StringVar()
+        self.__EXPAMOUNT = ctk.DoubleVar(value=0)
 
         self.__root.bind('<KeyPress>', self.ROOT_EVT_KeyPressed)
 
@@ -60,7 +62,22 @@ class Home:
             case 'NOTES': return self.__NOTES
     
     def ROOT_EVT_KeyPressed(self, EVT):
+        self.__SAVINGS.set(self.__ADD_SAVINGS.get() * .2)
+        self.CHECK_Amount_Fields()
         self.__SP.UPDATE_UserDetails()
+
+    def CHECK_Amount_Fields(self):
+        if self.__BUDGET_NEEDS.get() > self.__ADD_SAVINGS.get() * .5:
+            self.__entry_needs.configure(text_color='red')
+            Tktp(self.__entry_needs, msg='The Budget for Needs exceeds 50% of the Allowance.', follow=True, delay=1)
+        else:
+            self.__entry_needs.configure(text_color='white')
+
+        if self.__BUDGET_WANTS.get() > self.__ADD_SAVINGS.get() * .3:
+            self.__entry_wants.configure(text_color='red')
+            Tktp(self.__entry_wants, msg='The Budget for Wants exceeds 30% of the Allowance.' , follow=True, delay=1)
+        else:
+            self.__entry_wants.configure(text_color='white')
 
     def ADD_Objectives(self):
         if not self.__EXPENDITURES.get(): MSGBOX.showerror('ERROR', 'Expenditures cannot be empty!', parent=self.__root); return 0
@@ -69,13 +86,30 @@ class Home:
         RESULT = self.__SP.ADD_List(self.__EXPCATEGORY.get(), self.__EXPENDITURES.get(), float(self.__EXPAMOUNT.get()))
         if RESULT == 'ADDSUCCESS': MSGBOX.showinfo('Item Added', 'Item successfully added.')
 
-    def VMCD_Entry_OnlyFloat(self, VALUE):
-        if VALUE == '': return True
-        if VALUE.replace('.', '', 1).isdigit() and VALUE.count('.') <= 1: return True
+    def VMCD_Entry_OnlyFloat(self, NEWVALUE):
+        # WIDGET = self.__root.nametowidget(WIDGET_NAME)
+        # VARNAME = WIDGET.cget("textvariable")
+        # VARIABLE = self.__root.getvar(VARNAME)
+
+        if NEWVALUE == '':
+            if len(NEWVALUE) >= 1:
+                return True
+        if NEWVALUE.replace('.', '', 1).isdigit() and NEWVALUE.count('.') <= 1: return True
         return False
 
+    def VALIDATION_COMMAND_List(self):
+        self.VMC_ADDAMOUNT = (self.__root.register(self.VMCD_Entry_OnlyFloat), '%P')
+        self.VMC_SAVINGS = (self.__root.register(self.VMCD_Entry_OnlyFloat), '%P', '%W')
+        # self.VMC
+        # self.VMC
+        # self.VMC
+        # self.VMC
+        ...
     def TL_LIST_Return_Variables(self, OBJECT):
         return self.__List.TL_LIST_Return_Variables(OBJECT)
+
+    def HOME_LIST_ModifyTables(self, TABLE, DATA):
+        return self.__List.TL_LIST_ModifyTables(TABLE, DATA)
 
     def __get_main_window_width(self):
         return self.__get_frame_width(0.8)
@@ -84,7 +118,7 @@ class Home:
         return self.__get_frame_height(0.8)
     
     def Main_Window(self):
-        self.__root.title("Expense Tracker/Home")
+        self.__root.title("Expense Tracker / Home")
         self.__root.configure(fg_color = "black")
         self.__root.minsize(self.__get_main_window_width(),self.__get_main_window_height())
         self._center_frame()

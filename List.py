@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 from tkinter import ttk
+from tkinter import messagebox as MSGBOX
 import os
 class List:
     def __init__(self, parent, SP_MWF):
@@ -11,11 +12,17 @@ class List:
         self.__root.withdraw()
         self.__INITIATE_VARIABLES()
         self.Main_Window()
+        self.__ListUpdateWindow()
 
     def __INITIATE_VARIABLES(self):
         self.__PROFILENAME = ctk.StringVar()
         self.__LIST_NEEDS = []
         self.__LIST_WANTS = []
+
+        self.__SELECTED_ID = ctk.StringVar()
+        self.__SELECTED_CATEGORY = ctk.StringVar()
+        self.__SELECTED_NAME = ctk.StringVar()
+        self.__SELECTED_AMOUNT = ctk.StringVar()
 
     def TL_LIST_Return_Variables(self, OBJECT):
         match OBJECT:
@@ -30,9 +37,69 @@ class List:
     def TL_PROTOCOL_List(self):
         self.__root.withdraw()
 
+    def TL_LIST_ModifyTables(self, TABLE, DATA):
+        match TABLE:
+            case 'NEEDS':
+                for ITEM in DATA:
+                    self.__table_display_needs.insert('','end', values=(ITEM[0], ITEM[1], ITEM[2],))
+            case 'WANTS':
+                for ITEM in DATA:
+                    self.__table_display_wants.insert('','end', values=(ITEM[0], ITEM[1], ITEM[2],))
+
     def GET_TL_RootList(self):
         return self.__root
     
+    def __ListUpdateWindow(self):
+        self.__TL_List_Update = ctk.CTkToplevel(self.__root)
+        self.__TL_List_Update.withdraw()
+        self.__TL_List_Update.protocol("WM_DELETE_WINDOW", self.__PROT_TL_List_Update)
+        self.__TL_List_Update.title('Update selected')
+
+        self.__TL_List_Update.configure(fg_color='black')
+        WinW, WinH = 700, 200
+        PosX = (self.__root.winfo_screenwidth() // 2) - (WinW // 2)
+        PosY = (self.__root.winfo_screenheight() // 2) - (WinH // 2)
+        self.__TL_List_Update.geometry(f'{WinW}x{WinH}+{PosX}+{PosY}')
+        self.__TL_List_Update.resizable(False, False)
+
+        ctk.CTkLabel(self.__TL_List_Update, text='Update Item', text_color='white', font=('Poppins', 20)).place(x=25, y=15)
+        ctk.CTkLabel(self.__TL_List_Update, text='OBJ ID', text_color='white', font=('Poppins', 20)).place(x=25, y=50)
+        ctk.CTkLabel(self.__TL_List_Update, text='CATEGORY', text_color='white', font=('Poppins', 20)).place(x=110, y=50)
+        ctk.CTkLabel(self.__TL_List_Update, text='OBJECTIVE NAME', text_color='white', font=('Poppins', 20)).place(x=300, y=50)
+        ctk.CTkLabel(self.__TL_List_Update, text='AMOUNT', text_color='white', font=('Poppins', 20)).place(x=570, y=50)
+
+        ctk.CTkEntry(self.__TL_List_Update, font=('Poppins', 20), width=80, height=45,textvariable=self.__SELECTED_ID, state='readonly', fg_color='gray', bg_color='black', corner_radius=30, border_color='black').place(x=25, y=80)
+        ctk.CTkEntry(self.__TL_List_Update, font=('Poppins', 20), width=100, height=45,textvariable=self.__SELECTED_CATEGORY, state='readonly', fg_color='gray', bg_color='black', corner_radius=30, border_color='black').place(x=110, y=80)
+        ctk.CTkEntry(self.__TL_List_Update, font=('Poppins', 20), width=350, height=45,textvariable=self.__SELECTED_NAME, fg_color='gray', bg_color='black', corner_radius=30, border_color='black').place(x=215, y=80)
+        ctk.CTkEntry(self.__TL_List_Update, font=('Poppins', 20), width=100, height=45,textvariable=self.__SELECTED_AMOUNT, fg_color='gray', bg_color='black', corner_radius=30, border_color='black', validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P')).place(x=570, y=80)
+
+        ctk.CTkButton(self.__TL_List_Update, text='Update', font=('Poppins', 20), width=100, height=45, fg_color='gray', bg_color='black', corner_radius=30, border_color='white').place(x=550, y=140)
+    
+    def VMCD_Entry_OnlyFloat(self, NEWVALUE):
+        # WIDGET = self.__root.nametowidget(WIDGET_NAME)
+        # VARNAME = WIDGET.cget("textvariable")
+        # VARIABLE = self.__root.getvar(VARNAME)
+
+        if NEWVALUE == '': return True
+        if NEWVALUE.replace('.', '', 1).isdigit() and NEWVALUE.count('.') <= 1: return True
+        return False
+
+    def ON_CLICK_UpdateBtn(self):
+        if not self.__SELECTED_NAME.get(): MSGBOX.showerror('Error', "Item name shouldn't be empty."); return 0
+        if not self.__SELECTED_AMOUNT.get(): MSGBOX.showerror('Error', "Entered amount shouldn't be empty."); return 0
+
+    def TABELS_On_Row_Selected(self, TABLE):
+        SELECTED_ITEM = TABLE.selection()
+        if SELECTED_ITEM:
+            SELECTED_ROW = TABLE.item(SELECTED_ITEM, "values")
+            self.__SELECTED_ID.set(SELECTED_ROW[0])
+            self.__SELECTED_CATEGORY.set(SELECTED_ROW[1])
+            self.__SELECTED_NAME.set(SELECTED_ROW[2])
+            self.__SELECTED_AMOUNT.set(SELECTED_ROW[3])
+
+    def __PROT_TL_List_Update(self):
+        self.__TL_List_Update.withdraw()
+
     def __get_main_window_width(self):
         return self.__get_frame_width(1)
     
@@ -169,7 +236,7 @@ class List:
     def __update(self):
         self.__update_pht = ctk.CTkImage(light_image = self.__get_delete_icon(), dark_image = self.__get_update_icon(), size=(40,40))
         
-        self.__update_button = ctk.CTkButton (self.__get_footer_navigation_frame(), image = self.__update_pht, text="Update",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
+        self.__update_button = ctk.CTkButton (self.__get_footer_navigation_frame(), image = self.__update_pht, text="Update",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, command=lambda: self.__TL_List_Update.deiconify())
         self.__update_button.place(relx=0.6, rely=0.5, anchor="center")
 
     def __get_update_icon(self):
@@ -185,10 +252,8 @@ class List:
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/bin.png')).convert("RGBA")
     
     def __category_entry_box(self):
-        
         self.placeholder_cat = "Category"
-        
-        self.__catg_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify="center")
+        self.__catg_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify="center", state='readonly')
         self.__catg_entry_box.insert(0, self.placeholder_cat)
         self.__catg_entry_box.bind("<Button-1>", self.__onclick_category)
         self.__catg_entry_box.bind("<FocusOut>", self.__on_focusout_category)
@@ -205,9 +270,7 @@ class List:
             self.__catg_entry_box.configure(fg_color='gray')  
     
     def __objective_entry_box(self):
-        
         self.placeholder_obj = "Objective Name"
-        
         self.__obj_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify = "center")
         self.__obj_entry_box.insert(0, self.placeholder_obj)
         self.__obj_entry_box.bind("<Button-1>", self.__onclick_objective)
@@ -245,9 +308,8 @@ class List:
         self.__table_display_needs.column('col1', width= 100, stretch= True,anchor="center")
         self.__table_display_needs.column('col2', width= 100, stretch= True,anchor="center")
         self.__table_display_needs.place(relx=0.25, rely=0.1, relheight=1, relwidth= 0.4,anchor="n")
-        self.__table_display_needs.insert('','end', values=('', '', '',))
-        self.__table_display_needs.insert('','end', values=('', '', ''))
         self.__table_display_needs.bind("<ButtonPress-1>", self.handle_click_category_needs)
+        self.__table_display_needs.bind("<<TreeviewSelect>>", lambda e: self.TABELS_On_Row_Selected(self.__table_display_needs))
 
     def __table_wants(self):
         self.__style_wants = ttk.Style()
@@ -261,9 +323,8 @@ class List:
         self.__table_display_wants.column('col3', width= 100, stretch= True,anchor="center")
         self.__table_display_wants.column('col4', width= 100, stretch= True,anchor="center")
         self.__table_display_wants.place(relx=0.75, rely=0.1, relheight=1, relwidth= 0.4,anchor="n")
-        self.__table_display_wants.insert('','end', values=('', '', ''))
-        self.__table_display_wants.insert('','end', values=('', '', ''))
         self.__table_display_wants.bind("<ButtonPress-1>", self.handle_click_category_wants)
+        self.__table_display_wants.bind("<<TreeviewSelect>>", lambda e: self.TABELS_On_Row_Selected(self.__table_display_wants))
 
     def handle_click_category_needs(self, event):
         """Handle the click event for both preventing drag and clearing selection."""
@@ -308,4 +369,3 @@ class List:
     def GET_RELEVANT_PATHDIR(self, IMAGENAME):
       path = os.path.dirname(os.path.abspath(__file__))
       return os.path.join(path, IMAGENAME)
-# window = List()
