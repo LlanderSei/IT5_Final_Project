@@ -251,23 +251,30 @@ class List:
     def __get_delete_icon(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/bin.png')).convert("RGBA")
     
-    def __category_entry_box(self):
-        self.placeholder_cat = "Category"
-        self.__catg_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify="center", state='readonly')
-        self.__catg_entry_box.insert(0, self.placeholder_cat)
-        self.__catg_entry_box.bind("<Button-1>", self.__onclick_category)
-        self.__catg_entry_box.bind("<FocusOut>", self.__on_focusout_category)
-        self.__catg_entry_box.place( relx= 0.13, rely= 0.5, anchor="center" )
     
+    # This function creates an entry box for category selection with a placeholder
+    def __category_entry_box(self):
+        
+        # Define the placeholder text for the category entry box
+        self.placeholder_cat = "Category"
+        
+        self.__catg_entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame(), width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25, justify="center", state='readonly')
+        self.__catg_entry_box.insert(0, self.placeholder_cat) # Insert the placeholder text into the entry box
+        self.__catg_entry_box.bind("<Button-1>", self.__onclick_category)# Bind events to the entry box - clicking the box triggers the __onclick_category function
+        self.__catg_entry_box.bind("<FocusOut>", self.__on_focusout_category) # Bind focus out event to trigger __on_focusout_category when the box loses focus
+        self.__catg_entry_box.place( relx= 0.13, rely= 0.5, anchor="center")
+    
+    # Event handler for when the category entry box is clicked (if not readonly)
     def __onclick_category(self, event):
         if self.__catg_entry_box.get() == self.placeholder_cat:
             self.__catg_entry_box.delete(0, ctk.END)  
-            self.__catg_entry_box.configure(fg_color='black') 
+            self.__catg_entry_box.configure(fg_color="#2c2c2c") 
     
     def __on_focusout_category(self, event):
+          # If the box is empty, reinsert the placeholder text and reset the background color
         if self.__catg_entry_box.get() == '':
             self.__catg_entry_box.insert(0, self.placeholder_cat)  
-            self.__catg_entry_box.configure(fg_color='gray')  
+            self.__catg_entry_box.configure(fg_color="#2c2c2c")  
     
     def __objective_entry_box(self):
         self.placeholder_obj = "Objective Name"
@@ -276,16 +283,21 @@ class List:
         self.__obj_entry_box.bind("<Button-1>", self.__onclick_objective)
         self.__obj_entry_box.bind("<FocusOut>", self.__on_focusout_objective)
         self.__obj_entry_box.place( relx= 0.35, rely= 0.5, anchor="center" )
-    
+        
+    # Event handler for when the category entry box is clicked for the Objective Name
     def __onclick_objective(self, event):
+        # If the current text in the entry box is the placeholder, clear the box
         if self.__obj_entry_box.get() == self.placeholder_obj:
-            self.__obj_entry_box.delete(0, ctk.END)  
-            self.__obj_entry_box.configure(fg_color='black')  
+            self.__obj_entry_box.delete(0, ctk.END)  # Clear the text
+            self.__obj_entry_box.configure(fg_color="#2c2c2c")  # Change background color to dark grey
+
     
+    # Event handler for when the objective entry box loses focus
     def __on_focusout_objective(self, event):
+        # If the box is empty, reinsert the placeholder text and reset the background color
         if self.__obj_entry_box.get() == '':
             self.__obj_entry_box.insert(0, self.placeholder_obj)  
-            self.__obj_entry_box.configure(fg_color='gray')  
+            self.__obj_entry_box.configure(fg_color="#2c2c2c")  
     
     def __table_list_frame(self):
         self.__table_list = ctk.CTkFrame(self.__get_main_frame(), width=self.__get_table_list_width(), height= self.__get_table_list_height(), fg_color="#696969")
@@ -296,21 +308,32 @@ class List:
     def __get_table_list_frame(self):
         return self.__table_list
     
+    # Function to create and configure the table for "Needs" with a custom style
     def __table_needs(self):
+           # Configure the style for the "Needs" table with specific fonts, colors, and row height
         self.__style_needs = ttk.Style()
         self.__style_needs.configure("Needs.Treeview", font=("Poppins", 20), rowheight=85, bordercolor="Black", borderwidth=2,background="black", fieldbackground="black", foreground="white")
         self.__style_needs.configure("Needs.Treeview.Heading", font=("Poppins", 25, "bold"),bordercolor="Black", borderwidth=2, padding=(5,10))
+        
+        # Create the table with three columns ('id', 'col3', 'col4') to display data related to wants
         self.__table_display_needs = ttk.Treeview(self.__get_table_list_frame(), columns=('id','col1', 'col2'),show= 'headings', style="Needs.Treeview")
+        
+         # Set up the table headings and column sizes for "ID", "Wants", and "Amount"
         self.__table_display_needs.heading('id', text= 'ID')
         self.__table_display_needs.heading('col1', text= 'Needs')
         self.__table_display_needs.heading('col2', text= 'Amount')
+        
+        # Configure the columns for width and alignment
         self.__table_display_needs.column('id', width= 50, stretch= False,anchor="center")
         self.__table_display_needs.column('col1', width= 100, stretch= True,anchor="center")
         self.__table_display_needs.column('col2', width= 100, stretch= True,anchor="center")
+        
+        # Place the table in the frame and bind mouse click and row selection events
         self.__table_display_needs.place(relx=0.25, rely=0.1, relheight=1, relwidth= 0.4,anchor="n")
         self.__table_display_needs.bind("<ButtonPress-1>", self.handle_click_category_needs)
         self.__table_display_needs.bind("<<TreeviewSelect>>", lambda e: self.TABELS_On_Row_Selected(self.__table_display_needs))
-
+    
+    #Same as what explains from the __table_needs 
     def __table_wants(self):
         self.__style_wants = ttk.Style()
         self.__style_wants .configure("Wants.Treeview", font=("Poppins", 20), rowheight=85, bordercolor="Black", borderwidth=2,background="black", fieldbackground="black", foreground="white")

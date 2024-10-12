@@ -97,7 +97,7 @@ class MainWindow:
     "/ LOGIN BUTTON"
     CTK.CTkButton(self.__Login_LeftFrame, text='Log-In', width=350, height=70, font=('Poppins', 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color= "#e1e1e1", corner_radius= 50, command=lambda:self.MWF.BUTTON_Login()).place(relx= 0.5, y = 450, anchor= "n")
 
-    "/ SIGNUP BUTTON"
+    "/ SIGNUP BUTTON" 
     CTK.CTkButton(self.__Login_LeftFrame, text="Sign-Up", width= 350, height= 70, font=("Poppins", 20), fg_color=self.COLOR('VERYDARKGRAY'), text_color="#e1e1e1", corner_radius= 50, command=lambda: self.MWF.SWITCH_RegisterFrame()).place(relx= 0.5, y = 530, anchor= "n")
 
   def __SET_LeftFrame_Register(self):
