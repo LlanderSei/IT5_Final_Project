@@ -197,12 +197,12 @@ class List:
     def __onclick_category(self, event):
         if self.__catg_entry_box.get() == self.placeholder_cat:
             self.__catg_entry_box.delete(0, ctk.END)  
-            self.__catg_entry_box.config(fg='black') 
+            self.__catg_entry_box.configure(fg_color='black') 
     
     def __on_focusout_category(self, event):
         if self.__catg_entry_box.get() == '':
             self.__catg_entry_box.insert(0, self.placeholder_cat)  
-            self.__catg_entry_box.config(fg='gray')  
+            self.__catg_entry_box.configure(fg_color='gray')  
     
     def __objective_entry_box(self):
         
@@ -217,12 +217,12 @@ class List:
     def __onclick_objective(self, event):
         if self.__obj_entry_box.get() == self.placeholder_obj:
             self.__obj_entry_box.delete(0, ctk.END)  
-            self.__obj_entry_box.config(fg='black')  
+            self.__obj_entry_box.configure(fg_color='black')  
     
     def __on_focusout_objective(self, event):
         if self.__obj_entry_box.get() == '':
             self.__obj_entry_box.insert(0, self.placeholder_obj)  
-            self.__obj_entry_box.config(fg='gray')  
+            self.__obj_entry_box.configure(fg_color='gray')  
     
     def __table_list_frame(self):
         self.__table_list = ctk.CTkFrame(self.__get_main_frame(), width=self.__get_table_list_width(), height= self.__get_table_list_height(), fg_color="#696969")
