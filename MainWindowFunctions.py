@@ -265,3 +265,9 @@ class MainWindowFunctions:
     match ALERTTYPE:
       case 'NEEDS_NAMEDUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS}" in Needs already existed.', parent=self.HOME.GET_TL_Root())
       case 'WANTS_NAMEDUPE': MSGBOX.showerror('ERROR', f'The "{OBJECTS}" in Wants already existed.', parent=self.HOME.GET_TL_Root())
+
+  def GET_TOTAL_NEEDS(self):
+    return self.__DBI.get_amount_needs()
+  
+  def GET_TOTAL_WANTS(self):
+    return self.__DBI.get_amount_wants()

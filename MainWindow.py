@@ -8,7 +8,6 @@ class MainWindow:
     self.__MainWindow = CTK.CTk()
     self.__INSTANTIATE_OBJECTS()
     self.MWF = MainWindowFunctions(self)
-    
     self.__SET_MainWindow()
     
   def __INSTANTIATE_OBJECTS(self):

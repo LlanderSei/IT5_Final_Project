@@ -300,5 +300,21 @@ class DatabaseInteraction:
       return True
     else: return False
 
+  def get_amount_needs(self):
+    self.__DB.CURSOR().execute(f'select AMOUNT from USER_NEEDED_OBJECTIVES')
+    self.amounts_needs = self.__DB.CURSOR().fetchall()
+    totalAm = 0
+    for total in self.amounts_needs:
+      totalAm += total[0]
+    return totalAm
+  
+  def get_amount_wants(self):
+    self.__DB.CURSOR().execute(f'select AMOUNT from USER_WANTED_OBJECTIVES')
+    self.amounts_wants = self.__DB.CURSOR().fetchall()
+    totalAm = 0
+    for total in self.amounts_wants:
+      totalAm += total[0]
+    return totalAm
+  
   def __InstantiateUserObjects(self, USER_ID):
     self.__DB.CURSOR().execute('insert into USER_BANK_INFOS(USER_ID, ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS) values (%s, %s, %s, %s, %s, %s)', (USER_ID, None, None, None, None, None))
