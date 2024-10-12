@@ -102,6 +102,7 @@ class List:
         self.__navigation_header_frame()
         self.__table_list_frame()
         self.__footer_navigation_frame()
+        
 
     def __set_main_frame(self):
         self.__main_frame = ctk.CTkFrame(self.__get_root(), width=self.__get_main_frame_width(), height= self.__get_main_frame_height(), fg_color="#696969")
@@ -159,6 +160,7 @@ class List:
         
         self.__update()
         self.__delete()
+        self.__category_entry_box()
         
     def __get_footer_navigation_frame(self):
         return self.__footer_navigation
@@ -187,8 +189,8 @@ class List:
         
         self.__entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "yellow")
         self.__entry_box.insert(0, self.placeholder)
-        self.bind("<FocusIn>", self.__onclick)
-        self.bind("<FocusOut>", self.__on_focusout)
+        self.__entry_box.bind("<FocusIn>", self.__onclick)
+        self.__entry_box.bind("<FocusOut>", self.__on_focusout)
         self.__entry_box.place( relx= 0.05, rely= 0.5, anchor="center" )
     
     def __onclick(self):
