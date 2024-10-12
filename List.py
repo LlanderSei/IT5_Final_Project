@@ -181,25 +181,25 @@ class List:
     def __get_delete_icon(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/bin.png')).convert("RGBA")
     
-    # def __category_entry_box(self):
+    def __category_entry_box(self):
         
-    #     placeholder = "Category"
+        self.placeholder = "Category"
         
-    #     self.__entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "yellow")
-    #     self.__entry_box.insert(0, placeholder)
-    #     self.bind("<FocusIn>", self.__onclick)
-    #     self.bind("<FocusOut>", self.__on_focustout)
-    #     self.__entry_box.place( relx= 0.05, rely= 0.5, anchor="center" )
+        self.__entry_box = ctk.CTkEntry(self.__get_footer_navigation_frame, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "yellow")
+        self.__entry_box.insert(0, self.placeholder)
+        self.bind("<FocusIn>", self.__onclick)
+        self.bind("<FocusOut>", self.__on_focusout)
+        self.__entry_box.place( relx= 0.05, rely= 0.5, anchor="center" )
     
-    # def __onclick(self):
-    #     if self.__entry_box.get() == placeholder:
-    #         self.__entry_box.delete(0, tk.END)  # Clear the entry
-    #         self.__entry_box.config(fg='black')  # C
+    def __onclick(self):
+        if self.__entry_box.get() == self.placeholder:
+            self.__entry_box.delete(0, ctk.END)  # Clear the entry
+            self.__entry_box.config(fg='black')  # C
     
-    # def __on_focusout(self):
-    #     if self.__entry_box.get() == '':
-    #         self.__entry_box.insert(0, placeholder)  # Insert the placeholder text
-    #         self.__entry_box.config(fg='gray')  # Change text color to gray
+    def __on_focusout(self):
+        if self.__entry_box.get() == '':
+            self.__entry_box.insert(0, self.placeholder)  # Insert the placeholder text
+            self.__entry_box.config(fg='gray')  # Change text color to gray
     
     
     def __table_list_frame(self):
