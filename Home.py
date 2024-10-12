@@ -227,33 +227,31 @@ class Home:
         self.__Logout()
         self.__View_Profile()
         self.__add()
-        self.__update()
-        self.__delete()
     
     def __get_navigation_footer_width(self):
         return self.__get_navigation_footer_frame_width(0.2)
     
     def __Logout(self):
-        self.__logout_pht = ctk.CTkImage(light_image = self.__get_logout_logo(), dark_image = self.__get_logout_logo(), size=(30,30))
+        self.__logout_pht = ctk.CTkImage(light_image = self.__get_logout_logo(), dark_image = self.__get_logout_logo(), size=(35,35))
         
-        self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__logout_pht, text="Log-out", corner_radius = 25 ,width= self.__get_navigation_footer_width(), height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
-        self.__logout_button.place(relx = 0.673, rely = 0.86, anchor = "s")
+        self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__logout_pht, text="Log-out", corner_radius = 25 ,width= 370, height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
+        self.__logout_button.place(relx = 0.158, rely = 0.75, anchor = "w")
         
     def __get_logout_logo(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/logout.png')).convert("RGBA")   
 
     def __View_Profile(self):
-        self.__viewprofile_pht = ctk.CTkImage(light_image = self.__get_viewprofile_logo(), dark_image = self.__get_viewprofile_logo(), size=(30,30))
+        self.__viewprofile_pht = ctk.CTkImage(light_image = self.__get_viewprofile_logo(), dark_image = self.__get_viewprofile_logo(), size=(35,35))
         
-        self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__viewprofile_pht, text="View Profile", corner_radius = 25 ,width= self.__get_navigation_footer_width(), height= 55, font=("Poppins",18),fg_color="#696969",border_width = 3,border_color = "#000000")
-        self.__view_button.place(relx = 0.320, rely = 0.85, anchor = "s")
+        self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__viewprofile_pht, text="View Profile", corner_radius = 25 ,width= 370, height= 55, font=("Poppins",18),fg_color="#696969",border_width = 3,border_color = "#000000")
+        self.__view_button.place(relx = 0.158, rely = 0.5, anchor = "w")
         
     def __get_viewprofile_logo(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/view.png')).convert("RGBA")
         
 
     def __add(self):
-        self.__add_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_add_logo(), size=(30,30))
+        self.__add_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_add_logo(), size=(35,35))
         
         self.__add_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__add_pht,text="Add", corner_radius = 25 ,width = 370 , height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.ADD_Objectives())
         self.__add_button.place(relx = 0.158, rely = 0.26, anchor = "w")
@@ -261,25 +259,6 @@ class Home:
     def __get_add_logo(self):
         return Image.open(self.GET_RELEVANT_PATHDIR('assets/add.png')).convert("RGBA")
     
-
-    def __update(self):
-        self.__update_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_update_logo(), size=(30,30))
-        
-        self.__update_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__update_pht, text="Update", corner_radius = 25 ,width= self.__get_navigation_footer_width(), height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
-        self.__update_button.place(relx = 0.320, rely = 0.6, anchor = "s")
-
-    def __get_update_logo(self):
-        return Image.open(self.GET_RELEVANT_PATHDIR('assets/changes.png')).convert("RGBA")
-    
-    def __delete(self):
-        self.__delete_pht = ctk.CTkImage(light_image = self.__get_list_logo(), dark_image = self.__get_delete_logo(), size=(30,30))
-        
-        self.__delete_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__delete_pht,text="Delete", corner_radius = 25 ,width= self.__get_navigation_footer_width(), height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
-        self.__delete_button.place(relx = 0.507, rely = 0.491, anchor = "w")
-
-    def __get_delete_logo(self):
-        return Image.open(self.GET_RELEVANT_PATHDIR('assets/bin.png')).convert("RGBA")
-
     def __income_frame(self):
         self.__income = ctk.CTkFrame(self.__get_main_frame(), width=self.__income_width(), height= self.__income_height(), fg_color="#696969")
         self.__income.place(relx = 0.19, rely = 0.35,anchor="center")
