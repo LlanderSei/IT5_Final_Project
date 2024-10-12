@@ -185,8 +185,8 @@ class Breakdown:
         self.__category_table_display.column('Total', width= 100, stretch= True, anchor="center")
         self.__category_table_display.column('Budget', width= 100, stretch= True, anchor="center")
         self.__category_table_display.column('Remaining', width= 100, stretch= True, anchor="center")
-        self.__category_table_display.insert('','end', values=('Needs',f'{self.SPMWF.GET_TOTAL_NEEDS}', '', ''))
-        self.__category_table_display.insert('','end', values=('Wants', f'{self.SPMWF.GET_TOTAL_WANTS}', '', ''))
+        self.__category_table_display.insert('','end', values=('Needs',f'{self.SPMWF.GET_TOTAL_NEEDS()}', '', ''))
+        self.__category_table_display.insert('','end', values=('Wants', f'{self.SPMWF.GET_TOTAL_WANTS()}', '', ''))
         self.__category_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
         self.__category_table_display.bind("<ButtonPress-1>", self.handle_click_category)
 

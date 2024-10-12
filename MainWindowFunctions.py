@@ -10,10 +10,10 @@ from Home import Home
 class MainWindowFunctions:
   def __init__(self, MAINWINDOW):
     self.MW = MAINWINDOW
+    self.__DBI = DatabaseInteraction()
     self.HOME = Home(self, self.MW)
     # self.LIST = List(self, self.HOME)
     # self.BREAKDOWN = Breakdown(self, self.HOME, self.LIST)
-    self.__DBI = DatabaseInteraction()
 
     self.__LI_Password_Shown = False
     self.__REG_Password_Shown = False

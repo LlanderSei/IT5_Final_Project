@@ -241,7 +241,7 @@ class List:
 	def __listbutton(self):
 			self.__list_pht = ctk.CTkImage(light_image = self.__get_list_icon(), dark_image = self.__get_list_icon(), size=(40,40))
 
-			self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__list_pht, text="List",width= self.__list_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", corner_radius = 25)
+			self.__list_button = ctk.CTkButton(self.__get_navigation_header_frame(),image = self.__list_pht, text="List",width= self.__list_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", corner_radius = 25, state='disabled')
 			self.__list_button.place(relx=0.6, rely=0.5, anchor="center")
 
 	def __get_list_icon(self):
@@ -250,8 +250,8 @@ class List:
 	def __breakdownbutton(self):
 			self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_icon(), dark_image = self.__get_breakdown_icon(), size=(40,40))
 
-			self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="Breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
-			self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
+			# self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text="Breakdown",width= self.__breakdown_button_width(),  height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000",  corner_radius = 25)
+			# self.__breakdown_button.place(relx=0.85, rely=0.5, anchor="center")
 
 	def __get_breakdown_icon(self):
 			return Image.open(self.GET_RELEVANT_PATHDIR('assets/breakdown.png')).convert("RGBA")
@@ -298,7 +298,7 @@ class List:
 		self.__catg_entry_box.insert(0, self.placeholder_cat) # Insert the placeholder text into the entry box
 		self.__catg_entry_box.bind("<Button-1>", self.__onclick_category)# Bind events to the entry box - clicking the box triggers the __onclick_category function
 		self.__catg_entry_box.bind("<FocusOut>", self.__on_focusout_category) # Bind focus out event to trigger __on_focusout_category when the box loses focus
-		self.__catg_entry_box.place( relx= 0.13, rely= 0.5, anchor="center")
+		# self.__catg_entry_box.place( relx= 0.13, rely= 0.5, anchor="center")
 	
 	# Event handler for when the category entry box is clicked (if not readonly)
 	def __onclick_category(self, event):
@@ -318,7 +318,7 @@ class List:
 		self.__obj_entry_box.insert(0, self.placeholder_obj)
 		self.__obj_entry_box.bind("<Button-1>", self.__onclick_objective)
 		self.__obj_entry_box.bind("<FocusOut>", self.__on_focusout_objective)
-		self.__obj_entry_box.place( relx= 0.35, rely= 0.5, anchor="center" )
+		# self.__obj_entry_box.place( relx= 0.35, rely= 0.5, anchor="center" )
 			
 	# Event handler for when the category entry box is clicked for the Objective Name
 	def __onclick_objective(self, event):

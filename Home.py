@@ -257,8 +257,8 @@ class Home:
   def __breakdownbutton(self):
     self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_logo(), dark_image = self.__get_breakdown_logo(), size=(40,40))
     
-    self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.__Breakdown.TL_Breakdown_Show())
-    self.__breakdown_button.place(relx = 0.830, rely = 0.5, anchor = "center")
+    # self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000") # command=lambda: self.__Breakdown.TL_Breakdown_Show()
+    # self.__breakdown_button.place(relx = 0.830, rely = 0.5, anchor = "center")
   
   def __get_breakdown_logo(self):
     return Image.open(self.GET_RELEVANT_PATHDIR('assets/breakdown.png')).convert("RGBA")
@@ -277,7 +277,7 @@ class Home:
     self.__logout_pht = ctk.CTkImage(light_image = self.__get_logout_logo(), dark_image = self.__get_logout_logo(), size=(35,35))
     
     self.__logout_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__logout_pht, text="Log-out", corner_radius = 25 ,width= 370, height= 55, font=("Poppins",20),fg_color="#696969",border_width = 3,border_color = "#000000")
-    self.__logout_button.place(relx = 0.158, rely = 0.75, anchor = "w")
+    # self.__logout_button.place(relx = 0.158, rely = 0.75, anchor = "w")
       
   def __get_logout_logo(self):
     return Image.open(self.GET_RELEVANT_PATHDIR('assets/logout.png')).convert("RGBA")   
@@ -286,7 +286,7 @@ class Home:
     self.__viewprofile_pht = ctk.CTkImage(light_image = self.__get_viewprofile_logo(), dark_image = self.__get_viewprofile_logo(), size=(35,35))
       
     self.__view_button = ctk.CTkButton(self.__get_navigation_footer_frame(), image = self.__viewprofile_pht, text="View Profile", corner_radius = 25 ,width= 370, height= 55, font=("Poppins",18),fg_color="#696969",border_width = 3,border_color = "#000000")
-    self.__view_button.place(relx = 0.158, rely = 0.5, anchor = "w")
+    # self.__view_button.place(relx = 0.158, rely = 0.5, anchor = "w")
       
   def __get_viewprofile_logo(self):
     return Image.open(self.GET_RELEVANT_PATHDIR('assets/view.png')).convert("RGBA")
@@ -318,17 +318,17 @@ class Home:
     self.__entry_savings = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "grey", textvariable=self.__SAVINGS, validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
     self.__entry_savings.place( relx = 0.88, rely = 0.35, anchor = "e")
 
-    self.__label_stipend = ctk.CTkLabel(self.__income, text= "Stipend:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color= "white")
-    self.__label_stipend.place( relx = 0.12, rely = 0.55, anchor = "w")
+    # self.__label_stipend = ctk.CTkLabel(self.__income, text= "Stipend:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color= "white")
+    # self.__label_stipend.place( relx = 0.12, rely = 0.55, anchor = "w")
     
-    self.__entry_stipend = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25), fg_color = "grey", textvariable=self.__STIPEND, validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
-    self.__entry_stipend.place( relx = 0.88, rely = 0.55, anchor = "e")
+    # self.__entry_stipend = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25), fg_color = "grey", textvariable=self.__STIPEND, validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
+    # self.__entry_stipend.place( relx = 0.88, rely = 0.55, anchor = "e")
 
-    self.__label_month_of = ctk.CTkLabel(self.__income, text = "Month of:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color = "white")
-    self.__label_month_of.place( relx=0.10, rely=0.75, anchor="w")
+    # self.__label_month_of = ctk.CTkLabel(self.__income, text = "Month of:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color = "white")
+    # self.__label_month_of.place( relx=0.10, rely=0.75, anchor="w")
 
-    self.__entry_month_of = ctk.CTkEntry(self.__income, width  = 190, height = 50, font = ("Poppins", 25), fg_color = "grey", textvariable=self.__MONTH_OF)
-    self.__entry_month_of.place( relx = 0.88, rely = 0.75, anchor = "e")
+    # self.__entry_month_of = ctk.CTkEntry(self.__income, width  = 190, height = 50, font = ("Poppins", 25), fg_color = "grey", textvariable=self.__MONTH_OF)
+    # self.__entry_month_of.place( relx = 0.88, rely = 0.75, anchor = "e")
   #ENDs here
   def __category_frame(self):
     self.__category = ctk.CTkFrame(self.__get_main_frame(), width=self.__category_width(), height= self.__category_height(), fg_color="#696969")
