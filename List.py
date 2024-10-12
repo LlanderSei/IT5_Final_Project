@@ -193,12 +193,12 @@ class List:
         self.__entry_box.bind("<FocusOut>", self.__on_focusout)
         self.__entry_box.place( relx= 0.05, rely= 0.5, anchor="center" )
     
-    def __onclick(self):
+    def __onclick(self, event):
         if self.__entry_box.get() == self.placeholder:
             self.__entry_box.delete(0, ctk.END)  # Clear the entry
             self.__entry_box.config(fg='black')  # C
     
-    def __on_focusout(self):
+    def __on_focusout(self, event):
         if self.__entry_box.get() == '':
             self.__entry_box.insert(0, self.placeholder)  # Insert the placeholder text
             self.__entry_box.config(fg='gray')  # Change text color to gray
