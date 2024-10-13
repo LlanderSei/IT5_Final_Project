@@ -39,7 +39,7 @@ class Breakdown:
 	def CALL_BKDW_BUDGETCALCULATIONS(self):
 		NEEDSREMAINING = self.__BKDW_BudgetNeeds.get() - self.__BKDW_TotalNeeds.get()
 		WANTSREMAINING = self.__BKDW_BudgetWants.get() - self.__BKDW_TotalWants.get()
-		TOTALEXPENSES = self.__BKDW_TotalNeeds.get() - self.__BKDW_TotalWants.get()
+		TOTALEXPENSES = self.__BKDW_TotalNeeds.get() + self.__BKDW_TotalWants.get()
 		ALLBUDGETREMAINING = self.__BKDW_Allowance.get() - TOTALEXPENSES
 
 		self.__BKDW_NeedsRemaining.set(NEEDSREMAINING)
