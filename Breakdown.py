@@ -10,9 +10,53 @@ class Breakdown:
         self.__root = ctk.CTkToplevel(self.__parent.GET_TL_Root())
         self.__root.protocol("WM_DELETE_WINDOW", self.TL_PROTOCOL_Breakdown)
         self.__root.withdraw()
+        self.__INSTANTIATE_VARS()
         self.Main_Window()
 
+    def __INSTANTIATE_VARS(self):
+        self.__BKDW_ProfileName = ctk.StringVar(value=0)
+        self.__BKDW_TotalNeeds = ctk.DoubleVar(value=0)
+        self.__BKDW_TotalWants = ctk.DoubleVar(value=0)
+        self.__BKDW_BudgetNeeds = ctk.DoubleVar(value=0)
+        self.__BKDW_BudgetWants = ctk.DoubleVar(value=0)
+        self.__BKDW_NeedsRemaining = ctk.DoubleVar(value=0)
+        self.__BKDW_WantsRemaining = ctk.DoubleVar(value=0)
+        self.__BKDW_Savings = ctk.DoubleVar(value=0)
+        self.__BKDW_TotalExpenses = ctk.DoubleVar(value=0)
+        self.__BKDW_SavingsRemaining = ctk.DoubleVar(value=0)
+
+    def CALL_BKDW_VARIABLES(self, VARIABLE):
+        match VARIABLE:
+            case 'PROFILENAME': return self.__BKDW_ProfileName
+            case 'TOTALNEEDS': return self.__BKDW_TotalNeeds
+            case 'TOTALWANTS': return self.__BKDW_TotalWants
+            case 'BUDGETNEEDS': return self.__BKDW_BudgetNeeds
+            case 'BUDGETWANTS': return self.__BKDW_BudgetWants
+            case 'SAVINGS': return self.__BKDW_Savings
+    
+    def CALL_BKDW_BUDGETCALCULATIONS(self):
+        NEEDSREMAINING = self.__BKDW_BudgetNeeds.get() - self.__BKDW_TotalNeeds.get()
+        WANTSREMAINING = self.__BKDW_BudgetWants.get() - self.__BKDW_TotalWants.get()
+        TOTALEXPENSES = NEEDSREMAINING - WANTSREMAINING
+        SAVINGSREMAINING = self.__BKDW_Savings.get() - TOTALEXPENSES
+
+        self.__BKDW_NeedsRemaining.set(NEEDSREMAINING)
+        self.__BKDW_WantsRemaining.set(WANTSREMAINING)
+        self.__BKDW_TotalExpenses.set(TOTALEXPENSES)
+        self.__BKDW_SavingsRemaining.set(SAVINGSREMAINING)
+        
+        self.UPDATE_TABLE_DETAILS()
+
+    def UPDATE_TABLE_DETAILS(self):
+        self.__category_table_display.item('cr1', values=('Needs', f'{self.__BKDW_TotalNeeds.get()}', f'{self.__BKDW_BudgetNeeds.get()}', f'{self.__BKDW_NeedsRemaining.get()}'))
+        self.__category_table_display.item('cr2', values=('Wants', f'{self.__BKDW_TotalWants.get()}', f'{self.__BKDW_BudgetWants.get()}', f'{self.__BKDW_WantsRemaining.get()}'))
+
+        self.__savings_table_display.item('sr1', values=('Savings:', f'{self.__BKDW_Savings.get()}'))
+        self.__savings_table_display.item('sr2', values=('Total Expenses:', f'{self.__BKDW_TotalExpenses.get()}'))
+        self.__savings_table_display.item('sr3', values=('Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
+
     def TL_Breakdown_Show(self):
+        self.SPMWF.UPDATE_Breakdown_Details()
         self.__root.deiconify()
         self.__root.after(50, lambda: self.__root.state('zoomed'))
 
@@ -138,7 +182,7 @@ class Breakdown:
     def __usernamebutton(self):
         self.__name_pht = ctk.CTkImage(light_image = self.__get_name_logo(), dark_image = self.__get_name_logo(), size=(50,50))
 
-        self.__username_button = ctk.CTkButton(self.__get_navigation_frame(),image = self.__name_pht, text="Name",width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="#2c2c2c", corner_radius= 25)
+        self.__username_button = ctk.CTkButton(self.__get_navigation_frame(),image = self.__name_pht, text="Name", textvariable=self.__BKDW_ProfileName, width= self.__username_button_width(), height= 60, font=("Poppins",23, "bold"),fg_color="#2c2c2c", corner_radius= 25)
         self.__username_button.place(relx=0.25, rely=0.5, anchor="center")
         self.__photo = ctk.CTkImage(light_image= self.__get_image_logo(),
                      dark_image= self.__get_image_logo(),
@@ -185,8 +229,8 @@ class Breakdown:
         self.__category_table_display.column('Total', width= 100, stretch= True, anchor="center")
         self.__category_table_display.column('Budget', width= 100, stretch= True, anchor="center")
         self.__category_table_display.column('Remaining', width= 100, stretch= True, anchor="center")
-        self.__category_table_display.insert('','end', values=('Needs',f'{self.SPMWF.GET_TOTAL_NEEDS()}', '', ''))
-        self.__category_table_display.insert('','end', values=('Wants', f'{self.SPMWF.GET_TOTAL_WANTS()}', '', ''))
+        self.__category_table_display.insert('','end', iid='cr1', values=('Needs',f'{self.__BKDW_TotalNeeds.get()}', f'{self.__BKDW_BudgetNeeds.get()}', f'{self.__BKDW_NeedsRemaining.get()}'))
+        self.__category_table_display.insert('','end', iid='cr2', values=('Wants', f'{self.__BKDW_TotalWants.get()}', f'{self.__BKDW_BudgetWants.get()}', f'{self.__BKDW_WantsRemaining.get()}'))
         self.__category_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
         self.__category_table_display.bind("<ButtonPress-1>", self.handle_click_category)
 
@@ -239,9 +283,9 @@ class Breakdown:
         self.__savings_table_display.column('Savings', width= 100, stretch= True,anchor="center")
         self.__savings_table_display.column('Amount', width= 100, stretch= True, anchor="center")
         self.__savings_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
-        self.__savings_table_display.insert('','end', values=('Savings:', ''))
-        self.__savings_table_display.insert('','end', values=('Total Expenses:', ''))
-        self.__savings_table_display.insert('','end', values=('Remaining:', ''))
+        self.__savings_table_display.insert('','end', iid='sr1', values=('Savings:', f'{self.__BKDW_Savings.get()}'))
+        self.__savings_table_display.insert('','end', iid='sr2', values=('Total Expenses:', f'{self.__BKDW_TotalExpenses.get()}'))
+        self.__savings_table_display.insert('','end', iid='sr3', values=('Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
         self.__savings_table_display.bind("<ButtonPress-1>", self.handle_click_save)
     def GET_RELEVANT_PATHDIR(self, IMAGENAME):
       path = os.path.dirname(os.path.abspath(__file__))

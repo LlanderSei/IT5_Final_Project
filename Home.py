@@ -19,11 +19,9 @@ class Home:
     self.__List = List(self, self.__SP)
     self.__Breakdown = Breakdown(self, self.__SP)
     
-    
     self.__INITIATE_OBJECTS()
-    # self.VALIDATION_COMMAND_List()
     self.Main_Window()
-    # self.__root.mainloop()
+    self.__POST_INSANTIATE_OBJECTS()
 
   def TL_PROTOCOL_Home(self):
     self.__root.withdraw()
@@ -37,19 +35,23 @@ class Home:
   
   def __INITIATE_OBJECTS(self):
     self.__PROFILENAME = ctk.StringVar()
-    self.__ADD_SAVINGS = ctk.DoubleVar(value=0)
+    self.__ADD_SAVINGS = ctk.StringVar()
     self.__SAVINGS = ctk.DoubleVar(value=0)
     self.__STIPEND = ctk.DoubleVar(value=0)
     self.__MONTH_OF = ctk.StringVar()
-    self.__BUDGET_NEEDS = ctk.DoubleVar(value=0)
-    self.__BUDGET_WANTS = ctk.DoubleVar(value=0)
+    self.__BUDGET_NEEDS = ctk.StringVar()
+    self.__BUDGET_WANTS = ctk.StringVar()
     self.__NOTES = ctk.StringVar()
 
     self.__EXPCATEGORY = ctk.StringVar(value= 'Needs')
     self.__EXPENDITURES = ctk.StringVar()
-    self.__EXPAMOUNT = ctk.DoubleVar(value=0)
+    self.__EXPAMOUNT = ctk.StringVar()
 
     self.__root.bind('<KeyPress>', self.ROOT_EVT_KeyPressed)
+  
+  def __POST_INSANTIATE_OBJECTS(self):
+    Tktp(self.__entry_needs, msg="The Budget for Needs shouldn't exceed 50% of the Allowance.", follow=True, delay=.5)
+    Tktp(self.__entry_wants, msg="The Budget for Wants shouldn't exceed 30% of the Allowance." , follow=True, delay=.5)
 
   def Update_Infos(self, INFO):
     match INFO:
@@ -63,20 +65,25 @@ class Home:
       case 'NOTES': return self.__NOTES
   
   def ROOT_EVT_KeyPressed(self, EVT):
-    self.__SAVINGS.set(self.__ADD_SAVINGS.get() * .2)
+    ADDSAVINGS = float(self.__ADD_SAVINGS.get() if self.__ADD_SAVINGS.get() else 0)
+
+    self.__SAVINGS.set(ADDSAVINGS * .2)
     self.CHECK_Amount_Fields()
     self.__SP.UPDATE_UserDetails()
+    self.__SP.RUNTIME_UPDATE_BREAKDOWN()
 
   def CHECK_Amount_Fields(self):
-    if self.__BUDGET_NEEDS.get() > self.__ADD_SAVINGS.get() * .5:
+    ADDSAVINGS = float(self.__ADD_SAVINGS.get() if self.__ADD_SAVINGS.get() else 0)
+    BUDGETNEEDS = float(self.__BUDGET_NEEDS.get() if self.__BUDGET_NEEDS.get() else 0)
+    BUDGETWANTS = float(self.__BUDGET_WANTS.get() if self.__BUDGET_WANTS.get() else 0)
+    
+    if BUDGETNEEDS > ADDSAVINGS * .5:
       self.__entry_needs.configure(text_color='red')
-      Tktp(self.__entry_needs, msg='The Budget for Needs exceeds 50% of the Allowance.', follow=True, delay=1)
     else:
       self.__entry_needs.configure(text_color='white')
 
-    if self.__BUDGET_WANTS.get() > self.__ADD_SAVINGS.get() * .3:
+    if BUDGETWANTS > ADDSAVINGS * .3:
       self.__entry_wants.configure(text_color='red')
-      Tktp(self.__entry_wants, msg='The Budget for Wants exceeds 30% of the Allowance.' , follow=True, delay=1)
     else:
       self.__entry_wants.configure(text_color='white')
 
@@ -92,32 +99,25 @@ class Home:
       self.__SP.PRELOAD_List_Details()
 
   def VMCD_Entry_OnlyFloat(self, NEWVALUE):
-    # WIDGET = self.__root.nametowidget(WIDGET_NAME)
-    # VARNAME = WIDGET.cget("textvariable")
-    # VARIABLE = self.__root.getvar(VARNAME)
-
     if NEWVALUE == '':
-      if len(NEWVALUE) >= 1:
-        return True
+      return True
     if NEWVALUE.replace('.', '', 1).isdigit() and NEWVALUE.count('.') <= 1: return True
     return False
 
   def DEL_ALL_TABLES_LIST(self):
     return self.__List.ALL_TABLES_DeleteAllRows()
 
-  def VALIDATION_COMMAND_List(self):
-    self.VMC_ADDAMOUNT = (self.__root.register(self.VMCD_Entry_OnlyFloat), '%P')
-    self.VMC_SAVINGS = (self.__root.register(self.VMCD_Entry_OnlyFloat), '%P', '%W')
-    # self.VMC
-    # self.VMC
-    # self.VMC
-    # self.VMC
-    ...
   def TL_LIST_Return_Variables(self, OBJECT):
     return self.__List.TL_LIST_Return_Variables(OBJECT)
 
   def HOME_LIST_ModifyTables(self, TABLE, DATA):
     return self.__List.TL_LIST_ModifyTables(TABLE, DATA)
+
+  def HOME_CALL_BKDW_VARS(self, VARIABLE):
+    return self.__Breakdown.CALL_BKDW_VARIABLES(VARIABLE)
+
+  def HOME_CALL_BKDW_CALCULATIONS(self):
+    return self.__Breakdown.CALL_BKDW_BUDGETCALCULATIONS()
 
   def __get_main_window_width(self):
     return self.__get_frame_width(0.8)
@@ -257,8 +257,8 @@ class Home:
   def __breakdownbutton(self):
     self.__breakdown_pht = ctk.CTkImage(light_image = self.__get_breakdown_logo(), dark_image = self.__get_breakdown_logo(), size=(40,40))
     
-    # self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000") # command=lambda: self.__Breakdown.TL_Breakdown_Show()
-    # self.__breakdown_button.place(relx = 0.830, rely = 0.5, anchor = "center")
+    self.__breakdown_button = ctk.CTkButton(self.__get_navigation_header_frame(), image = self.__breakdown_pht, text = "Breakdown", corner_radius = 25, width = self.__breakdown_button_width(), height= 50, font=("Poppins",23, "bold"), fg_color="#696969",border_width = 3,border_color = "#000000", command=lambda: self.__Breakdown.TL_Breakdown_Show()) # 
+    self.__breakdown_button.place(relx = 0.830, rely = 0.5, anchor = "center")
   
   def __get_breakdown_logo(self):
     return Image.open(self.GET_RELEVANT_PATHDIR('assets/breakdown.png')).convert("RGBA")
@@ -306,7 +306,7 @@ class Home:
     self.__income.place(relx = 0.19, rely = 0.35,anchor="center")
       
     #LABELS for the input and correspond to that is their individual entery boxes, starts here and  line 177 
-    self.__label_add_savings = ctk.CTkLabel(self.__income, text = "Add Savings:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color = "white")
+    self.__label_add_savings = ctk.CTkLabel(self.__income, text = "Allowance", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color = "white")
     self.__label_add_savings.place( relx = 0.001, rely = 0.15, anchor = "w")
 
     self.__entry_add_savings = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25), fg_color = "grey", textvariable=self.__ADD_SAVINGS, validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
@@ -315,7 +315,7 @@ class Home:
     self.__label_savings = ctk.CTkLabel(self.__income, text = "Savings:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color = "white")
     self.__label_savings.place( relx = 0.11, rely = 0.35, anchor = "w")
 
-    self.__entry_savings = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "grey", textvariable=self.__SAVINGS, validate='key', validatecommand=(self.__root.register(self.VMCD_Entry_OnlyFloat), '%P'))
+    self.__entry_savings = ctk.CTkEntry(self.__income, width = 190, height = 50, font = ("Poppins", 25 ), fg_color = "grey", textvariable=self.__SAVINGS, state='readonly')
     self.__entry_savings.place( relx = 0.88, rely = 0.35, anchor = "e")
 
     # self.__label_stipend = ctk.CTkLabel(self.__income, text= "Stipend:", font = ("Poppins", 25, "bold"), width = 100, height = 30, text_color= "white")

@@ -173,7 +173,14 @@ class DatabaseInteraction:
       case 'WANTED_OBJECTIVES':
         self.__DB.CURSOR().execute(f"select OBJECTIVE_ID, OBJ_NAME, AMOUNT from USER_WANTED_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
         OBJECTIVEWANTEDLIST = self.__DB.CURSOR().fetchall()
-        return OBJECTIVEWANTEDLIST        
+        return OBJECTIVEWANTEDLIST
+      # case 'ALLNEEDSAMOUNTS':
+      #   self.__DB.CURSOR().execute(f"select AMOUNT from USER_WANTED_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
+      #   return self.__DB.CURSOR().fetchall()
+      # case 'ALLWANTSAMOUNTS':
+      #   self.__DB.CURSOR().execute(f"select AMOUNT from USER_AMOUNT_OBJECTIVES where USER_ID = '{self.__USER_ID}'")
+      #   return self.__DB.CURSOR().fetchall()
+
 
   def ModifyUser(self, MODE, *OBJECTS):
     match MODE:

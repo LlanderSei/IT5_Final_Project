@@ -189,45 +189,79 @@ class MainWindowFunctions:
 
   def PROCEED_To_Home(self):
     self.MW.GET_RootWindowObject().withdraw()
+    self.GET_ALL_USER_DATA()
     self.PRELOAD_User_Details()
     self.PRELOAD_List_Details()
+    self.UPDATE_Breakdown_Details()
     self.HOME.GET_TL_Root().after(50, lambda: self.HOME.get_fullscreen())
-  
-  def PRELOAD_User_Details(self):
-    FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
-    ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGETS_WANTS = self.__DBI.FetchUserAllInfo('BANKS')
 
-    self.HOME.Update_Infos('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
-    self.HOME.Update_Infos('ADDSAVINGS').set(ADD_SAVINGS if ADD_SAVINGS else 0)
-    self.HOME.Update_Infos('SAVINGS').set(SAVINGS if SAVINGS else 0)
-    self.HOME.Update_Infos('STIPEND').set(STIPEND if STIPEND else 0)
-    self.HOME.Update_Infos('MONTHOF').set(MONTH_OF if MONTH_OF else 0)
-    self.HOME.Update_Infos('BUDGETNEEDS').set(BUDGET_NEEDS if BUDGET_NEEDS else 0)
-    self.HOME.Update_Infos('BUDGETWANTS').set(BUDGETS_WANTS if BUDGETS_WANTS else 0)
-    self.HOME.UPDATE_TXB_Notes(NOTES if NOTES else '')
+  def UPDATE_INTERFACE(self):
+    self.GET_ALL_USER_DATA()
+    self.PRELOAD_User_Details()
+    self.PRELOAD_List_Details()
+    self.UPDATE_Breakdown_Details()
+  
+  def GET_ALL_USER_DATA(self):
+    self.__FIRST_NAME, self.__LAST_NAME, self.__AGE, self.__ADDRESS, self.__NOTES, self.__MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
+    self.__ADD_SAVINGS, self.__SAVINGS, self.__STIPEND, self.__BUDGET_NEEDS, self.__BUDGETS_WANTS = self.__DBI.FetchUserAllInfo('BANKS')
+    self.__ALL_NEEDS_LIST = self.__DBI.FetchUserAllInfo('NEEDED_OBJECTIVES')
+    self.__ALL_WANTS_LIST = self.__DBI.FetchUserAllInfo('WANTED_OBJECTIVES')
+
+  def PRELOAD_User_Details(self):
+    self.HOME.Update_Infos('PROFILENAME').set(f'{self.__FIRST_NAME} {self.__LAST_NAME}' if self.__LAST_NAME else self.__FIRST_NAME)
+    self.HOME.Update_Infos('ADDSAVINGS').set(self.__ADD_SAVINGS if self.__ADD_SAVINGS else 0)
+    self.HOME.Update_Infos('SAVINGS').set(self.__SAVINGS if self.__SAVINGS else 0)
+    self.HOME.Update_Infos('STIPEND').set(self.__STIPEND if self.__STIPEND else 0)
+    self.HOME.Update_Infos('MONTHOF').set(self.__MONTH_OF if self.__MONTH_OF else '')
+    self.HOME.Update_Infos('BUDGETNEEDS').set(self.__BUDGET_NEEDS if self.__BUDGET_NEEDS else 0)
+    self.HOME.Update_Infos('BUDGETWANTS').set(self.__BUDGETS_WANTS if self.__BUDGETS_WANTS else 0)
+    self.HOME.UPDATE_TXB_Notes(self.__NOTES if self.__NOTES else '')
 
   def PRELOAD_List_Details(self):
-    FIRST_NAME, LAST_NAME, AGE, ADDRESS, NOTES, MONTH_OF = self.__DBI.FetchUserAllInfo('USERINFO')
-    ALL_NEEDS_LIST = self.__DBI.FetchUserAllInfo('NEEDED_OBJECTIVES')
-    ALL_WANTS_LIST = self.__DBI.FetchUserAllInfo('WANTED_OBJECTIVES')
-
-    self.HOME.TL_LIST_Return_Variables('PROFILENAME').set(f'{FIRST_NAME} {LAST_NAME}' if LAST_NAME else FIRST_NAME)
+    self.HOME.TL_LIST_Return_Variables('PROFILENAME').set(f'{self.__FIRST_NAME} {self.__LAST_NAME}' if self.__LAST_NAME else self.__FIRST_NAME)
     self.HOME.DEL_ALL_TABLES_LIST()
-    self.HOME.HOME_LIST_ModifyTables('NEEDS', ALL_NEEDS_LIST)
-    self.HOME.HOME_LIST_ModifyTables('WANTS', ALL_WANTS_LIST)
+    self.HOME.HOME_LIST_ModifyTables('NEEDS', self.__ALL_NEEDS_LIST)
+    self.HOME.HOME_LIST_ModifyTables('WANTS', self.__ALL_WANTS_LIST)
+
+  def UPDATE_Breakdown_Details(self):
+    self.HOME.HOME_CALL_BKDW_VARS('PROFILENAME').set(f'{self.__FIRST_NAME} {self.__LAST_NAME}' if self.__LAST_NAME else self.__FIRST_NAME)
+
+    TOTALNEEDS = TOTALWANTS = 0.0
+
+    for _ID, _NAME, AMOUNTS in self.__ALL_NEEDS_LIST:
+      TOTALNEEDS += AMOUNTS
+    for _ID, _NAME, AMOUNTS in self.__ALL_WANTS_LIST:
+      TOTALWANTS += AMOUNTS
+
+    self.HOME.HOME_CALL_BKDW_VARS('TOTALNEEDS').set(TOTALNEEDS)
+    self.HOME.HOME_CALL_BKDW_VARS('TOTALWANTS').set(TOTALWANTS)
+    self.HOME.HOME_CALL_BKDW_VARS('BUDGETNEEDS').set(self.__BUDGET_NEEDS)
+    self.HOME.HOME_CALL_BKDW_VARS('BUDGETWANTS').set(self.__BUDGETS_WANTS)
+    self.HOME.HOME_CALL_BKDW_VARS('SAVINGS').set(self.__SAVINGS)
+
+    self.HOME.HOME_CALL_BKDW_CALCULATIONS()
 
   def UPDATE_UserDetails(self):
     ADDSAVINGS = self.HOME.Update_Infos('ADDSAVINGS').get()
     SAVINGS = self.HOME.Update_Infos('SAVINGS').get()
-    STIPEND = self.HOME.Update_Infos('STIPEND').get()
-    MONTH_OF = self.HOME.Update_Infos('MONTHOF').get()
+    # STIPEND = self.HOME.Update_Infos('STIPEND').get()
+    # MONTH_OF = self.HOME.Update_Infos('MONTHOF').get()
     BUDGET_NEEDS = self.HOME.Update_Infos('BUDGETNEEDS').get()
     BUDGET_WANTS = self.HOME.Update_Infos('BUDGETWANTS').get()
     NOTES = self.HOME.GET_TXB_Notes().get('1.0', 'end-1c')
 
-    self.__DBI.ModifyUser('BANK_INFOS', float(ADDSAVINGS if ADDSAVINGS else 0), float(SAVINGS if SAVINGS else 0), float(STIPEND if STIPEND else 0), float(BUDGET_NEEDS if BUDGET_NEEDS else 0), float(BUDGET_WANTS if BUDGET_WANTS else 0))
+    ADDSAVINGS = float(ADDSAVINGS if ADDSAVINGS else 0)
+    SAVINGS = float(SAVINGS if SAVINGS else 0)
+    BUDGET_NEEDS = float(BUDGET_NEEDS if BUDGET_NEEDS else 0)
+    BUDGET_WANTS = float(BUDGET_WANTS if BUDGET_WANTS else 0)
+
+    self.__DBI.ModifyUser('BANK_INFOS', ADDSAVINGS, SAVINGS, 0, BUDGET_NEEDS, BUDGET_WANTS)
     self.__DBI.ModifyUser('NOTES', NOTES)
-    self.__DBI.ModifyUser('MONTH_OF', MONTH_OF)
+    # self.__DBI.ModifyUser('MONTH_OF', MONTH_OF)
+
+  def RUNTIME_UPDATE_BREAKDOWN(self):
+    self.GET_ALL_USER_DATA()
+    self.UPDATE_Breakdown_Details()
 
   def ADD_List(self, CATEGORY, *OBJECTS):
     match CATEGORY.upper():
@@ -237,6 +271,7 @@ class MainWindowFunctions:
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
         if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS)
+    self.UPDATE_INTERFACE()
     return 'ADDSUCCESS'
     
   def UPDATE_List(self, CATEGORY, *OBJECTS):
@@ -248,7 +283,8 @@ class MainWindowFunctions:
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
         if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS[1]); return 0
-    self.PRELOAD_List_Details()
+    self.UPDATE_INTERFACE()
+    
     return 'SUCCESS'
 
   def DELETE_ITEM_List(self, CATEGORY, ID):
@@ -258,7 +294,7 @@ class MainWindowFunctions:
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('DELETE', int(ID))
     MSGBOX.showinfo('Success deletion.', 'The item has been deleted.')
-    self.PRELOAD_List_Details()
+    self.UPDATE_INTERFACE()
     return 'SUCCESS'
 
   def SHOW_MSGBOX_NOTIF(self, ALERTTYPE, OBJECTS):
