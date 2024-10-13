@@ -35,12 +35,12 @@ class Home:
   
   def __INITIATE_OBJECTS(self):
     self.__PROFILENAME = ctk.StringVar()
-    self.__ADD_SAVINGS = ctk.StringVar()
+    self.__ADD_SAVINGS = ctk.StringVar(value='0')
     self.__SAVINGS = ctk.DoubleVar(value=0)
     self.__STIPEND = ctk.DoubleVar(value=0)
     self.__MONTH_OF = ctk.StringVar()
-    self.__BUDGET_NEEDS = ctk.StringVar()
-    self.__BUDGET_WANTS = ctk.StringVar()
+    self.__BUDGET_NEEDS = ctk.StringVar(value='0')
+    self.__BUDGET_WANTS = ctk.StringVar(value='0')
     self.__NOTES = ctk.StringVar()
 
     self.__EXPCATEGORY = ctk.StringVar(value= 'Needs')
@@ -97,6 +97,8 @@ class Home:
       self.__EXPENDITURES.set('')
       self.__EXPAMOUNT.set(0)
       self.__SP.PRELOAD_List_Details()
+    else:
+      MSGBOX.showinfo('Item Name Duplicate', f"Cannot add '{self.__EXPENDITURES.get()}' in {self.__EXPCATEGORY.get()} because it already exists.")
 
   def VMCD_Entry_OnlyFloat(self, NEWVALUE):
     if NEWVALUE == '':

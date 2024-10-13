@@ -267,10 +267,10 @@ class MainWindowFunctions:
     match CATEGORY.upper():
       case 'NEEDS':
         RESULT = self.__DBI.ModifyNeededObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS)
+        if RESULT == 'NAME_NEEDEDOBJ_DUPE': return 0
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS)
+        if RESULT == 'NAME_WANTEDOBJ_DUPE': return 0
     self.UPDATE_INTERFACE()
     return 'ADDSUCCESS'
     
