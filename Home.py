@@ -7,6 +7,10 @@ from Breakdown import Breakdown
 from tkinter import messagebox as MSGBOX
 from tktooltip import ToolTip as Tktp
 
+NAMEEXISTOTHERTABLE = 'NAMEEXISTOTHERTABLE'
+NAME_NEED_DUPE = 'NAME_NEED_DUPE'
+NAME_WANT_DUPE = 'NAME_WANT_DUPE'
+
 class Home:
   def __init__(self, SUBPARENT, MAIN):
     self.__PT = MAIN
@@ -91,14 +95,18 @@ class Home:
     if not self.__EXPENDITURES.get(): MSGBOX.showerror('ERROR', 'Expenditures cannot be empty!', parent=self.__root); return 0
     if not self.__EXPAMOUNT.get(): MSGBOX.showerror('ERROR', 'Amount cannot be empty!', parent=self.__root); return 0
 
+
     RESULT = self.__SP.ADD_List(self.__EXPCATEGORY.get(), self.__EXPENDITURES.get(), float(self.__EXPAMOUNT.get()))
     if RESULT == 'ADDSUCCESS':
       MSGBOX.showinfo('Item Added', 'Item successfully added.')
       self.__EXPENDITURES.set('')
       self.__EXPAMOUNT.set(0)
       self.__SP.PRELOAD_List_Details()
-    else:
+    elif RESULT in [NAME_NEED_DUPE, NAME_WANT_DUPE]:
       MSGBOX.showinfo('Item Name Duplicate', f"Cannot add '{self.__EXPENDITURES.get()}' in {self.__EXPCATEGORY.get()} because it already exists.")
+    elif RESULT in NAMEEXISTOTHERTABLE:
+      OPPOSITECATEGORY = 'Wants' if self.__EXPCATEGORY.get() in 'Needs' else 'Needs'
+      MSGBOX.showerror('Cannot add.', f"Item '{self.__EXPENDITURES.get()}' cannot be added because it already exists on {OPPOSITECATEGORY} category.")
 
   def VMCD_Entry_OnlyFloat(self, NEWVALUE):
     if NEWVALUE == '':

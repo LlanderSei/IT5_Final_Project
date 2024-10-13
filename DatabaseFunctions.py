@@ -1,6 +1,10 @@
 import mysql.connector
 import hashlib
 
+NAMEEXISTOTHERTABLE = 'NAMEEXISTOTHERTABLE'
+NAME_NEED_DUPE = 'NAME_NEED_DUPE'
+NAME_WANT_DUPE = 'NAME_WANT_DUPE'
+
 class CreateDatabase:
 
   def __init__(self):
@@ -220,13 +224,17 @@ class DatabaseInteraction:
       match MODE:
         case 'ADD':
           if not self.__IsObjNameAlrExists_InNeeds(OBJECTS[0]):
-            self.__DB.CURSOR().execute(f"""insert into USER_NEEDED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
-          else: return 'NAME_NEEDEDOBJ_DUPE'
+            if not self.__IsObjNameAlrExists_InWants(OBJECTS[0]):
+              self.__DB.CURSOR().execute(f"""insert into USER_NEEDED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
+            else: return NAMEEXISTOTHERTABLE
+          else: return NAME_NEED_DUPE
 
         case 'UPDATE':
           if OBJECTS[1] != self.__RetObjective_InNeeds(OBJECTS[0], 'OBJ_NAME'):
             if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
-              return 'NAME_NEEDEDOBJ_DUPE'
+              return NAME_NEED_DUPE
+            elif self.__IsObjNameAlrExists_InWants(OBJECTS[1]):
+              return NAMEEXISTOTHERTABLE
           self.__DB.CURSOR().execute(f"""update USER_NEEDED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID}""")
 
         case 'DELETE':
@@ -260,13 +268,15 @@ class DatabaseInteraction:
       match MODE:
         case 'ADD':
           if not self.__IsObjNameAlrExists_InWants(OBJECTS[0]):
-            self.__DB.CURSOR().execute(f"""insert into USER_WANTED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
-          else: return 'NAME_WANTEDOBJ_DUPE'
+            if not self.__IsObjNameAlrExists_InNeeds(OBJECTS[0]):
+              self.__DB.CURSOR().execute(f"""insert into USER_WANTED_OBJECTIVES(USER_ID, OBJ_NAME, AMOUNT) values ('{self.__USER_ID}', '{OBJECTS[0]}', '{OBJECTS[1]}')""")
+            else: return NAMEEXISTOTHERTABLE
+          else: return NAME_WANT_DUPE
 
         case 'UPDATE':
           if OBJECTS[1] != self.__RetObjective_InWants(OBJECTS[0], 'OBJ_NAME'):
-            if self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]):
-              return 'NAME_WANTEDOBJ_DUPE'
+            if self.__IsObjNameAlrExists_InWants(OBJECTS[1]): return NAME_WANT_DUPE
+            elif self.__IsObjNameAlrExists_InNeeds(OBJECTS[1]): return NAMEEXISTOTHERTABLE
           self.__DB.CURSOR().execute(f"""update USER_WANTED_OBJECTIVES set OBJ_NAME = '{OBJECTS[1]}', AMOUNT = {OBJECTS[2]} where OBJECTIVE_ID = {OBJECTS[0]} and USER_ID = {self.__USER_ID}""")
 
         case 'DELETE':

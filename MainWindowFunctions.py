@@ -7,6 +7,10 @@ from Home import Home
 # from List import List
 # from Breakdown import Breakdown
 
+NAMEEXISTOTHERTABLE = 'NAMEEXISTOTHERTABLE'
+NAME_NEED_DUPE = 'NAME_NEED_DUPE'
+NAME_WANT_DUPE = 'NAME_WANT_DUPE'
+
 class MainWindowFunctions:
   def __init__(self, MAINWINDOW):
     self.MW = MAINWINDOW
@@ -268,10 +272,10 @@ class MainWindowFunctions:
     match CATEGORY.upper():
       case 'NEEDS':
         RESULT = self.__DBI.ModifyNeededObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': return 0
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
-        if RESULT == 'NAME_WANTEDOBJ_DUPE': return 0
+    
+    if RESULT in NAME_NEED_DUPE or NAME_WANT_DUPE or NAMEEXISTOTHERTABLE: return RESULT
     self.UPDATE_INTERFACE()
     return 'ADDSUCCESS'
     
@@ -280,13 +284,12 @@ class MainWindowFunctions:
     match CATEGORY.upper():
       case 'NEEDS':
         RESULT = self.__DBI.ModifyNeededObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS[1]); return 0
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
-        if RESULT == 'NAME_NEEDEDOBJ_DUPE': self.SHOW_MSGBOX_NOTIF('NEEDS_NAMEDUPE', OBJECTS[1]); return 0
+
+    if RESULT in NAME_NEED_DUPE or NAME_WANT_DUPE or NAMEEXISTOTHERTABLE: return RESULT
     self.UPDATE_INTERFACE()
-    
-    return 'SUCCESS'
+    return 'UPDATESUCCESS'
 
   def DELETE_ITEM_List(self, CATEGORY, ID):
     match CATEGORY.upper():

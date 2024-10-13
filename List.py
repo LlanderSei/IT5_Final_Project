@@ -108,7 +108,12 @@ class List:
 			if not self.__SELECTED_AMOUNT.get(): MSGBOX.showerror('Error', "Entered amount shouldn't be empty."); return 0
 
 			RESULT = self.__MWF.UPDATE_List(self.__SELECTED_CATEGORY.get(), self.__SELECTED_ID.get(), self.__SELECTED_NAME.get(), self.__SELECTED_AMOUNT.get())
-			if RESULT == 'SUCCESS': MSGBOX.showinfo('Update', 'Details has been updated!')
+			if RESULT == 'UPDATESUCCESS': MSGBOX.showinfo('Update', 'Details has been updated!')
+			elif RESULT in ['NAME_NEED_DUPE', 'NAME_WANT_DUPE']:
+				MSGBOX.showinfo('Update', f"Item cannot be renamed to '{self.__SELECTED_NAME.get()}' because it already exists on the category {self.__SELECTED_CATEGORY.get()}.")
+			elif RESULT in 'NAMEEXISTOTHERTABLE':
+				OPPOSITECATEGORY = 'Wants' if self.__SELECTED_CATEGORY.get() in 'Needs' else 'Needs'
+				MSGBOX.showinfo('Update', f"Item cannot be renamed to '{self.__SELECTED_NAME.get()}' because it already exists on the category {OPPOSITECATEGORY}.")
 
 	def TABELS_On_Row_Selected(self, TABLE, TABLENAME):
 			SELECTED_ITEM = TABLE.selection()
