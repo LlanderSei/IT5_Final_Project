@@ -15,6 +15,7 @@ class Breakdown:
 
 	def __INSTANTIATE_VARS(self):
 		self.__BKDW_ProfileName = ctk.StringVar(value=0)
+		self.__BKDW_Allowance = ctk.DoubleVar(value=0)
 		self.__BKDW_TotalNeeds = ctk.DoubleVar(value=0)
 		self.__BKDW_TotalWants = ctk.DoubleVar(value=0)
 		self.__BKDW_BudgetNeeds = ctk.DoubleVar(value=0)
@@ -28,6 +29,7 @@ class Breakdown:
 	def CALL_BKDW_VARIABLES(self, VARIABLE):
 		match VARIABLE:
 			case 'PROFILENAME': return self.__BKDW_ProfileName
+			case 'ALLOWANCE': return self.__BKDW_Allowance
 			case 'TOTALNEEDS': return self.__BKDW_TotalNeeds
 			case 'TOTALWANTS': return self.__BKDW_TotalWants
 			case 'BUDGETNEEDS': return self.__BKDW_BudgetNeeds
@@ -37,13 +39,13 @@ class Breakdown:
 	def CALL_BKDW_BUDGETCALCULATIONS(self):
 		NEEDSREMAINING = self.__BKDW_BudgetNeeds.get() - self.__BKDW_TotalNeeds.get()
 		WANTSREMAINING = self.__BKDW_BudgetWants.get() - self.__BKDW_TotalWants.get()
-		TOTALEXPENSES = NEEDSREMAINING - WANTSREMAINING
-		SAVINGSREMAINING = self.__BKDW_Savings.get() - TOTALEXPENSES
+		TOTALEXPENSES = self.__BKDW_TotalNeeds.get() - self.__BKDW_TotalWants.get()
+		ALLBUDGETREMAINING = self.__BKDW_Allowance.get() - TOTALEXPENSES
 
 		self.__BKDW_NeedsRemaining.set(NEEDSREMAINING)
 		self.__BKDW_WantsRemaining.set(WANTSREMAINING)
 		self.__BKDW_TotalExpenses.set(TOTALEXPENSES)
-		self.__BKDW_SavingsRemaining.set(SAVINGSREMAINING)
+		self.__BKDW_SavingsRemaining.set(ALLBUDGETREMAINING)
 		
 		self.UPDATE_TABLE_DETAILS()
 
