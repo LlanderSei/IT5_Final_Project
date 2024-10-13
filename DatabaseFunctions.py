@@ -324,4 +324,4 @@ class DatabaseInteraction:
     return totalAm
   
   def __InstantiateUserObjects(self, USER_ID):
-    self.__DB.CURSOR().execute('insert into USER_BANK_INFOS(USER_ID, ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS) values (%s, %s, %s, %s, %s, %s)', (USER_ID, None, None, None, None, None))
+    self.__DB.CURSOR().execute('insert into USER_BANK_INFOS(USER_ID, ADD_SAVINGS, SAVINGS, STIPEND, BUDGET_NEEDS, BUDGET_WANTS) values (%s, %s, %s, %s, %s, %s)', (USER_ID, 0, 0, 0, 0, 0))
