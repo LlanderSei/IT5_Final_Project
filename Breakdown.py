@@ -55,7 +55,7 @@ class Breakdown:
 
 		self.__savings_table_display.item('sr1', values=('Savings:', f'{self.__BKDW_Savings.get()}'))
 		self.__savings_table_display.item('sr2', values=('Total Expenses:', f'{self.__BKDW_TotalExpenses.get()}'))
-		self.__savings_table_display.item('sr3', values=('Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
+		self.__savings_table_display.item('sr3', values=('Allowance Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
 
 	def TL_Breakdown_Show(self):
 		self.SPMWF.UPDATE_Breakdown_Details()
@@ -288,7 +288,7 @@ class Breakdown:
 		self.__savings_table_display.place(relx=0.5, rely=0.5, relheight=1, relwidth= 1,anchor="center")
 		self.__savings_table_display.insert('','end', iid='sr1', values=('Savings:', f'{self.__BKDW_Savings.get()}'))
 		self.__savings_table_display.insert('','end', iid='sr2', values=('Total Expenses:', f'{self.__BKDW_TotalExpenses.get()}'))
-		self.__savings_table_display.insert('','end', iid='sr3', values=('Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
+		self.__savings_table_display.insert('','end', iid='sr3', values=('Allowance Remaining:', f'{self.__BKDW_SavingsRemaining.get()}'))
 		self.__savings_table_display.bind("<ButtonPress-1>", self.handle_click_save)
 
 	def GET_RELEVANT_PATHDIR(self, IMAGENAME):
