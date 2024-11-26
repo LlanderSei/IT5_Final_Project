@@ -275,9 +275,10 @@ class MainWindowFunctions:
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('ADD', OBJECTS[0], OBJECTS[1])
     
-    if RESULT in NAME_NEED_DUPE or NAME_WANT_DUPE or NAMEEXISTOTHERTABLE: return RESULT
-    self.UPDATE_INTERFACE()
-    return 'ADDSUCCESS'
+    if RESULT in [NAME_NEED_DUPE, NAME_WANT_DUPE, NAMEEXISTOTHERTABLE]: return RESULT
+    else:
+      self.UPDATE_INTERFACE()
+      return 'ADDSUCCESS'
     
   def UPDATE_List(self, CATEGORY, *OBJECTS):
     "*OBJECTS >> 0: ID, 1: NAME, 2: AMOUNT"
@@ -287,9 +288,10 @@ class MainWindowFunctions:
       case 'WANTS':
         RESULT = self.__DBI.ModifyWantedObjectives('UPDATE', int(OBJECTS[0]), OBJECTS[1], float(OBJECTS[2]))
 
-    if RESULT in NAME_NEED_DUPE or NAME_WANT_DUPE or NAMEEXISTOTHERTABLE: return RESULT
-    self.UPDATE_INTERFACE()
-    return 'UPDATESUCCESS'
+    if RESULT in [NAME_NEED_DUPE, NAME_WANT_DUPE, NAMEEXISTOTHERTABLE]: return RESULT
+    else:
+      self.UPDATE_INTERFACE()
+      return 'UPDATESUCCESS'
 
   def DELETE_ITEM_List(self, CATEGORY, ID):
     match CATEGORY.upper():
